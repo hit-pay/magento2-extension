@@ -23,13 +23,13 @@
 
 2. Run the command in terminal
 
-``` shell script
-composer require softbuild/hitpay:1.0.4
+```
+composer require softbuild/hitpay:1.0.4;
 ```
 
 ## Step 2: Enable magento 2 extension in terminal
 
-``` shell script
+```
 php -f bin/magento setup:upgrade;
 php -f bin/magento setup:di:compile;
 ```
