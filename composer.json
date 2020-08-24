@@ -3,7 +3,7 @@
   "description": "Integration with payment gateway of hitpay",
   "require": {
     "php": "~7.0.13||~7.1.0||~7.2.0",
-    "softbuild/hitpay-sdk": "1.6.*"
+    "softbuild/hitpay-sdk": "1.7.*"
   },
   "type": "magento2-module",
   "license": [
