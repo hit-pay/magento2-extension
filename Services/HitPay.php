@@ -167,7 +167,8 @@ class HitPay
                 ->setCurrency($this->storeManager->getStore()->getCurrentCurrency()->getCode())
                 ->setReferenceNumber($this->checkoutSession->getQuote()->getId())
                 ->setWebhook($webhook)
-                ->setRedirectUrl($redirect_url);
+                ->setRedirectUrl($redirect_url)
+                ->setChannel('api_magento');
 
             $create_payment_request->setName($this->customerSession->getName());
             $create_payment_request->setEmail($this->checkoutSession->getQuote()->getBillingAddress()->getEmail());
@@ -216,12 +217,12 @@ class HitPay
 
                 $id = $this->resourcePaymentsFactory->create()->getIdByPaymentId($payment_request_id);
                 $saved_payment = $this->paymentsFactory->create()->load($id);
-                if ($saved_payment) {
+                if ($saved_payment && !$saved_payment->getData('is_paid')) {
                     if ($this->request->getParam('status', false) == 'completed'
                         && $saved_payment->getData('amount') == $this->request->getParam('amount', false)
-                        && $saved_payment->getData('cart_id') == $this->request->getParam('reference_number', false)
-                        && !$saved_payment->getData('is_paid')) {
-                    $paymentStatus = Order::STATE_COMPLETE;
+                        && $saved_payment->getData('cart_id') == $this->request->getParam('reference_number', false)) {
+                        $paymentStatus = Order::STATE_COMPLETE;
+                        $saved_payment->setData('is_paid', true);
                     } elseif ($this->request->getParam('status', false) == 'failed') {
                         $paymentStatus = Order::STATE_CANCELED;
                     } elseif ($this->request->getParam('status', false) == 'pending') {
@@ -239,33 +240,38 @@ class HitPay
                     }
                 }
 
-                $store = $this->storeManager->getStore();
-                $websiteId = $this->storeManager->getStore()->getWebsiteId();
-                $customer = $this->customerFactory->create();
-                $customer->setWebsiteId($websiteId);
-                $customer->loadByEmail($quote->getBillingAddress()->getEmail());
-                if (!$customer->getEntityId()) {
-                    $customer->setWebsiteId($websiteId)
-                        ->setStore($store)
-                        ->setFirstname($quote->getBillingAddress()->getFirstname())
-                        ->setLastname($quote->getBillingAddress()->getLastname())
-                        ->setEmail($quote->getBillingAddress()->getEmail())
-                        ->setPassword($quote->getBillingAddress()->getEmail());
-                    $customer->save();
+                if ($quote->getIsActive()) {
+                    $store = $this->storeManager->getStore();
+                    $websiteId = $this->storeManager->getStore()->getWebsiteId();
+                    $customer = $this->customerFactory->create();
+                    $customer->setWebsiteId($websiteId);
+                    $customer->loadByEmail($quote->getBillingAddress()->getEmail());
+                    if (!$customer->getEntityId()) {
+                        $customer->setWebsiteId($websiteId)
+                            ->setStore($store)
+                            ->setFirstname($quote->getBillingAddress()->getFirstname())
+                            ->setLastname($quote->getBillingAddress()->getLastname())
+                            ->setEmail($quote->getBillingAddress()->getEmail())
+                            ->setPassword($quote->getBillingAddress()->getEmail());
+                        $customer->save();
+                    }
+                    $quote->setStore($store);
+                    $customer = $this->customerRepository->getById($customer->getEntityId());
+                    $quote->assignCustomer($customer);
+                    $orderId = $this->quoteManagement->placeOrder($quote->getId());
+                    $quote->setOrigOrderId($orderId);
+                    $quote->save();
+                } else {
+                    $orderId = $quote->getOrigOrderId();
                 }
-                $quote->setStore($store);
-                $customer = $this->customerRepository->getById($customer->getEntityId());
-                $quote->assignCustomer($customer);
 
-                $orderId = $this->quoteManagement->placeOrder($quote->getId());
                 $order = $this->order->load($orderId);
-
                 $order->setState($paymentStatus)->setStatus($paymentStatus);
                 $order->save();
 
                 $saved_payment->setData('status', $this->request->getParam('status', false));
                 $saved_payment->setData('order_id', $order->getRealOrderId());
-                $saved_payment->setData('is_paid', true);
+
                 $saved_payment->save();
 
                 /*$api_key = $this->scopeConfig->getValue('payment/hitpay_gateway/api_key');

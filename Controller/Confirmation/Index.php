@@ -52,6 +52,9 @@ class Index extends Action
      */
     public function execute()
     {
+        //todo remove after
+        sleep(3);
+
         try {
             if (!$this->hitPayService->checkPayment()) {
                 $this->_forward('unsuccess');

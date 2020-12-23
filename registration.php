@@ -6,6 +6,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'SoftBuild___HitPay',
+    'SoftBuild_HitPay',
     __DIR__
 );
