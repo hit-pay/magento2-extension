@@ -24,7 +24,7 @@
 2. Run the command in terminal
 
 ```
-composer require softbuild/hitpay:1.0.6;
+composer require softbuild/hitpay:1.0.7;
 ```
 
 ## Step 2: Enable magento 2 extension in terminal
