@@ -36,7 +36,7 @@ php -f bin/magento setup:di:compile;
 
 ## Step 3: Configuration the extension
 
-You need to have Api Key and Salt. The values you can take from [the page](https://dashboard.staging.hit-pay.com/) after registration
+You need to have Api Key and Salt. The values you can take from [the page](https://dashboard.sandbox.hit-pay.com/) after registration
 ![Configuration page](images/1step.png)
 
 ![Sale page](images/step2.png)
