@@ -8,7 +8,7 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
-use SoftBuild\HItPay\Services\HitPay;
+use SoftBuild\HitPay\Services\HitPay;
 
 /**
  * Class Index

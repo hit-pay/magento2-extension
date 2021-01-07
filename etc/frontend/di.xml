@@ -10,8 +10,7 @@
     <type name="Magento\Checkout\Model\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">
-                <item name="hitpay_gateway_config_provider" xsi:type="object">SoftBuild\HitPay\Model\Ui\ConfigProvider
-                </item>
+                <item name="hitpay_gateway_config_provider" xsi:type="object">SoftBuild\HitPay\Model\Ui\ConfigProvider</item>
             </argument>
         </arguments>
     </type>

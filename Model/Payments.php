@@ -7,7 +7,7 @@ use Magento\Framework\Model\AbstractModel;
 
 /**
  * Class Payments
- * @package SoftBuild\HItPay\Model
+ * @package SoftBuild\HitPay\Model
  */
 class Payments extends AbstractModel implements IdentityInterface
 {

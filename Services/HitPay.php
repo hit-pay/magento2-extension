@@ -246,7 +246,7 @@ class HitPay
                     $customer = $this->customerFactory->create();
                     $customer->setWebsiteId($websiteId);
                     $customer->loadByEmail($quote->getBillingAddress()->getEmail());
-                    if (!$customer->getEntityId()) {
+                    if (!$customer->getId()) {
                         $customer->setWebsiteId($websiteId)
                             ->setStore($store)
                             ->setFirstname($quote->getBillingAddress()->getFirstname())
@@ -256,9 +256,32 @@ class HitPay
                         $customer->save();
                     }
                     $quote->setStore($store);
-                    $customer = $this->customerRepository->getById($customer->getEntityId());
-                    $quote->assignCustomer($customer);
-                    $orderId = $this->quoteManagement->placeOrder($quote->getId());
+
+                    file_put_contents(
+                        '/var/www/html/log.txt',
+                        "\n" . print_r($_POST, true) .
+                        "\n\nfile: " . __FILE__ .
+                        "\n\nline: " . __LINE__ .
+                        "\n\ntime: " . date('d-m-Y H:i:s'), 8
+                    );
+
+                    try {
+                        $customer = $this->customerRepository->getById($customer->getId());
+                        $quote->assignCustomer($customer);
+                        $orderId = $this->quoteManagement->placeOrder($quote->getId());
+                    } catch (\Error | \Exception $e) {
+                        file_put_contents(
+                            '/var/www/html/log.txt',
+                            "\n" . print_r($e->getMessage(), true) .
+                            "\n" . print_r($e->getFile(), true) .
+                            "\n" . print_r($e->getLine(), true) .
+                            "\n" . print_r($e->getTrace(), true) .
+                            "\n\nfile: " . __FILE__ .
+                            "\n\nline: " . __LINE__ .
+                            "\n\ntime: " . date('d-m-Y H:i:s'), 8
+                        );
+                    }
+
                     $quote->setOrigOrderId($orderId);
                     $quote->save();
                 } else {
@@ -285,12 +308,7 @@ class HitPay
                 throw new \Exception(sprintf('HitPay: hmac is not the same like generated'));
             }
         } catch (\Exeption $e) {
-            PrestaShopLogger::addLog(
-                'HitPay: ' . $e->getMessage(),
-                3,
-                null,
-                'HitPay'
-            );
+            throw new \Exception(sprintf('HitPay: %s', $e->getMessage()));
         }
     }
 
@@ -306,7 +324,7 @@ class HitPay
         $savedPayment = $this->paymentsFactory->create()->load($id);
 
         if ($savedPayment->getData('status') == 'completed'
-            && $savedPayment->getData('is_paid')) {
+            /*&& $savedPayment->getData('is_paid')*/) {
             $order = $this->order->load($savedPayment->getData('order_id'));
 
             $this->checkoutSession->setLastSuccessQuoteId($savedPayment->getData('cart_id'));

@@ -3,12 +3,9 @@
 namespace SoftBuild\HitPay\Controller\Webhook;
 
 use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\Page;
-use Magento\Framework\View\Result\PageFactory;
-use SoftBuild\HItPay\Services\HitPay;
 
 class Index extends Action
 {
@@ -26,7 +23,7 @@ class Index extends Action
      */
     private $quoteFactory;
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -38,9 +35,9 @@ class Index extends Action
      * @param \Magento\Quote\Model\QuoteFactory $quoteFactory
      */
     public function __construct(
-        Context $context,
-        PageFactory $pageFactory,
-        HitPay $hitPayService,
+        \Magento\Framework\App\Action\Context $context,
+        \Magento\Framework\View\Result\PageFactory $pageFactory,
+        \SoftBuild\HitPay\Services\HitPay $hitPayService,
         \Psr\Log\LoggerInterface $logger
     ) {
         $this->_pageFactory = $pageFactory;
@@ -62,10 +59,30 @@ class Index extends Action
                 return false;
             }
 
+            file_put_contents(
+                '/var/www/html/log.txt',
+                "\n" . print_r($this->getRequest()->getParam('cart_id', false), true) .
+                "\n" . print_r($this->getRequest()->getParam('hmac', false), true) .
+                "\n\nfile: " . __FILE__ .
+                "\n\nline: " . __LINE__ .
+                "\n\ntime: " . date('d-m-Y H:i:s'), 8
+            );
+
             $this->hitPayService->checkData();
 
             exit;
-        } catch (\Exception $e) {
+        } catch (\Error | \Exception $e) {
+
+            file_put_contents(
+                         '/var/www/html/log.txt',
+                        "\n" . print_r($e->getMessage(), true) .
+                        "\n" . print_r($e->getFile(), true) .
+                        "\n" . print_r($e->getLine(), true) .
+                        "\n" . print_r($e->getTrace(), true) .
+                        "\n\nfile: " . __FILE__ .
+                        "\n\nline: " . __LINE__ .
+                        "\n\ntime: " . date('d-m-Y H:i:s'), 8
+                    );
             $this->logger->error($e->getMessage());
         }
         

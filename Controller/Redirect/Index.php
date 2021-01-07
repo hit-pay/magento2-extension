@@ -3,12 +3,9 @@
 namespace SoftBuild\HitPay\Controller\Redirect;
 
 use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\Page;
-use Magento\Framework\View\Result\PageFactory;
-use SoftBuild\HitPay\Services\HitPay;
 
 /**
  * Class Index
@@ -33,9 +30,9 @@ class Index extends Action
      * @param HitPay $hitPayService
      */
     public function __construct(
-        Context $context,
-        PageFactory $pageFactory,
-        HitPay $hitPayService
+        \Magento\Framework\App\Action\Context $context,
+        \Magento\Framework\View\Result\PageFactory $pageFactory,
+        \SoftBuild\HitPay\Services\HitPay $hitPayService
     ) {
         $this->_pageFactory = $pageFactory;
         $this->hitPayService = $hitPayService;
