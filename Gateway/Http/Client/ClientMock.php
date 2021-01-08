@@ -1,8 +1,5 @@
 <?php
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
+
 namespace SoftBuild\HitPay\Gateway\Http\Client;
 
 use Magento\Payment\Gateway\Http\ClientInterface;

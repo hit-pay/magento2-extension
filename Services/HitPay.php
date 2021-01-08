@@ -84,6 +84,11 @@ class HitPay
     private $customerRepository;
 
     /**
+     * @var \Magento\Framework\Webapi\Rest\Request
+     */
+    private $webRequest;
+
+    /**
      * HitPay constructor.
      * @param ScopeConfigInterface $scopeConfig
      * @param StoreManagerInterface $storeManager
@@ -110,6 +115,7 @@ class HitPay
         \SoftBuild\HitPay\Model\PaymentsFactory $paymentsFactory,
         \Magento\Quote\Model\QuoteFactory $quoteFactory,
         \Magento\Framework\App\RequestInterface $request,
+        \Magento\Framework\Webapi\Rest\Request $webRequest,
         \Magento\Quote\Model\QuoteManagement $quoteManagement,
         \SoftBuild\HitPay\Model\ResourceModel\PaymentsFactory $resourcePaymentsFactory,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
@@ -135,6 +141,7 @@ class HitPay
         $this->checkoutSession = $checkoutSession;
         $this->customerFactory = $customerFactory;
         $this->customerRepository = $customerRepository;
+        $this->webRequest = $webRequest;
     }
 
     /**
@@ -156,10 +163,19 @@ class HitPay
             );
 
             $webhook = $this->storeManager->getStore()->getUrl(
-                'hitpay/webhook',
+                'rest/V1/hitpay-webhook',
                 [
                     'cart_id' => $this->cart->getQuote()->getId()
                 ]
+            );
+
+            file_put_contents(
+                '/var/www/html/log.txt',
+                "\n" . print_r($redirect_url, true) .
+                "\n" . print_r($webhook, true) .
+                "\n\nfile: " . __FILE__ .
+                "\n\nline: " . __LINE__ .
+                "\n\ntime: " . date('d-m-Y H:i:s'), 8
             );
 
             $create_payment_request = new CreatePayment();
@@ -199,9 +215,8 @@ class HitPay
     
     public function checkData()
     {
-        $quoteId = $this->request->getParam('cart_id', false);
-
-        $quote = $this->quoteRepository->get($quoteId);;
+        $quoteId = $this->webRequest->getParam('cart_id', false);
+        $quote = $this->quoteRepository->get($quoteId);
 
         if (empty($quote)) {
             throw new \Exception('HitPay: quote not found');
@@ -212,15 +227,15 @@ class HitPay
             unset($data['hmac']);
             $paymentStatus = Order::STATE_PENDING_PAYMENT;
             $salt = $this->scopeConfig->getValue('payment/hitpay_gateway/salt');
-            if (Client::generateSignatureArray($salt, $data) == $this->request->getParam('hmac', false)) {
-                $payment_request_id = $this->request->getParam('payment_request_id', false);
+            if (Client::generateSignatureArray($salt, $data) == $this->webRequest->getParam('hmac', false)) {
+                $payment_request_id = $this->webRequest->getParam('payment_request_id', false);
 
                 $id = $this->resourcePaymentsFactory->create()->getIdByPaymentId($payment_request_id);
                 $saved_payment = $this->paymentsFactory->create()->load($id);
                 if ($saved_payment && !$saved_payment->getData('is_paid')) {
-                    if ($this->request->getParam('status', false) == 'completed'
-                        && $saved_payment->getData('amount') == $this->request->getParam('amount', false)
-                        && $saved_payment->getData('cart_id') == $this->request->getParam('reference_number', false)) {
+                    if ($this->webRequest->getParam('status', false) == 'completed'
+                        && $saved_payment->getData('amount') == $this->webRequest->getParam('amount', false)
+                        && $saved_payment->getData('cart_id') == $this->webRequest->getParam('reference_number', false)) {
                         $paymentStatus = Order::STATE_COMPLETE;
                         $saved_payment->setData('is_paid', true);
                     } elseif ($this->request->getParam('status', false) == 'failed') {
@@ -255,32 +270,16 @@ class HitPay
                             ->setPassword($quote->getBillingAddress()->getEmail());
                         $customer->save();
                     }
+                    $quote->setCustomerFirstname($quote->getBillingAddress()->getFirstname());
+                    $quote->setCustomerLastname($quote->getBillingAddress()->getLastname());
+                    $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
+                    $quote->setCustomerIsGuest(true);
                     $quote->setStore($store);
 
-                    file_put_contents(
-                        '/var/www/html/log.txt',
-                        "\n" . print_r($_POST, true) .
-                        "\n\nfile: " . __FILE__ .
-                        "\n\nline: " . __LINE__ .
-                        "\n\ntime: " . date('d-m-Y H:i:s'), 8
-                    );
+                    $customer = $this->customerRepository->getById($customer->getId());
+                    /*$quote->assignCustomer($customer);*/
 
-                    try {
-                        $customer = $this->customerRepository->getById($customer->getId());
-                        $quote->assignCustomer($customer);
-                        $orderId = $this->quoteManagement->placeOrder($quote->getId());
-                    } catch (\Error | \Exception $e) {
-                        file_put_contents(
-                            '/var/www/html/log.txt',
-                            "\n" . print_r($e->getMessage(), true) .
-                            "\n" . print_r($e->getFile(), true) .
-                            "\n" . print_r($e->getLine(), true) .
-                            "\n" . print_r($e->getTrace(), true) .
-                            "\n\nfile: " . __FILE__ .
-                            "\n\nline: " . __LINE__ .
-                            "\n\ntime: " . date('d-m-Y H:i:s'), 8
-                        );
-                    }
+                    $orderId = $this->quoteManagement->placeOrder($quote->getId());
 
                     $quote->setOrigOrderId($orderId);
                     $quote->save();

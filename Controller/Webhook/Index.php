@@ -53,20 +53,22 @@ class Index extends Action
      */
     public function execute()
     {
+        file_put_contents(
+            '/var/www/html/log.txt',
+            "\n" . print_r($this->getRequest()->getParam('cart_id', false), true) .
+            "\n" . print_r($this->getRequest()->getParam('hmac', false), true) .
+            "\n\nfile: " . __FILE__ .
+            "\n\nline: " . __LINE__ .
+            "\n\ntime: " . date('d-m-Y H:i:s'), 8
+        );
+
         try {
             if (($this->getRequest()->getParam('cart_id', false) == false)
                 || ($this->getRequest()->getParam('hmac', false) == false)) {
                 return false;
             }
 
-            file_put_contents(
-                '/var/www/html/log.txt',
-                "\n" . print_r($this->getRequest()->getParam('cart_id', false), true) .
-                "\n" . print_r($this->getRequest()->getParam('hmac', false), true) .
-                "\n\nfile: " . __FILE__ .
-                "\n\nline: " . __LINE__ .
-                "\n\ntime: " . date('d-m-Y H:i:s'), 8
-            );
+
 
             $this->hitPayService->checkData();
 
