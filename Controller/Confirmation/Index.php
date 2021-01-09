@@ -30,6 +30,16 @@ class Index extends Action
     private $logger;
 
     /**
+     * @var \Magento\Framework\App\ResponseFactory
+     */
+    private $responseFactory;
+
+    /**
+     * @var \Magento\Framework\UrlInterface
+     */
+    private $url;
+
+    /**
      * Index constructor.
      * @param Context $context
      * @param PageFactory $pageFactory
@@ -38,10 +48,14 @@ class Index extends Action
     public function __construct(
         Context $context,
         PageFactory $pageFactory,
-        HitPay $hitPayService
+        HitPay $hitPayService,
+        \Magento\Framework\App\ResponseFactory $responseFactory,
+        \Magento\Framework\UrlInterface $url
     ) {
         $this->_pageFactory = $pageFactory;
         $this->hitPayService = $hitPayService;
+        $this->responseFactory = $responseFactory;
+        $this->url = $url;
 
         return parent::__construct($context);
     }
@@ -52,8 +66,11 @@ class Index extends Action
      */
     public function execute()
     {
-        //todo remove after
-        sleep(3);
+        if ($this->getRequest()->getParam('status') == 'canceled') {
+            $cartUrl = $this->_url->getUrl('checkout/index');
+            $this->responseFactory->create()->setRedirect($cartUrl)->sendResponse();
+            exit;
+        }
 
         try {
             if (!$this->hitPayService->checkPayment()) {

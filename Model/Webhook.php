@@ -46,6 +46,7 @@ class Webhook implements ApiProviderInterface
             exit;
         } catch (\Error | \Exception $e) {
             $this->logger->error($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 }

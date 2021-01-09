@@ -74,6 +74,7 @@ class HitPay
      * @var \Magento\Checkout\Model\Session
      */
     private $checkoutSession;
+
     /**
      * @var \Magento\Customer\Model\CustomerFactory
      */
@@ -261,14 +262,20 @@ class HitPay
                             ->setPassword($quote->getBillingAddress()->getEmail());
                         $customer->save();
                     }
+
                     $quote->setCustomerFirstname($quote->getBillingAddress()->getFirstname());
                     $quote->setCustomerLastname($quote->getBillingAddress()->getLastname());
                     $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
                     $quote->setCustomerIsGuest(true);
+
+                    $quote->setCustomerId(null);
+                    $quote->save();
+
+
                     $quote->setStore($store);
 
-                    $customer = $this->customerRepository->getById($customer->getId());
-                    /*$quote->assignCustomer($customer);*/
+                    /*$customer = $this->customerRepository->getById($customer->getId());
+                    $quote->assignCustomer($customer);*/
 
                     $orderId = $this->quoteManagement->placeOrder($quote->getId());
 
