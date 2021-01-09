@@ -169,15 +169,6 @@ class HitPay
                 ]
             );
 
-            file_put_contents(
-                '/var/www/html/log.txt',
-                "\n" . print_r($redirect_url, true) .
-                "\n" . print_r($webhook, true) .
-                "\n\nfile: " . __FILE__ .
-                "\n\nline: " . __LINE__ .
-                "\n\ntime: " . date('d-m-Y H:i:s'), 8
-            );
-
             $create_payment_request = new CreatePayment();
             $create_payment_request->setAmount($this->cart->getQuote()->getGrandTotal())
                 ->setCurrency($this->storeManager->getStore()->getCurrentCurrency()->getCode())
@@ -190,7 +181,7 @@ class HitPay
             $create_payment_request->setEmail($this->checkoutSession->getQuote()->getBillingAddress()->getEmail());
 
             $result = $hitpay_client->createPayment($create_payment_request);
-            
+
             /**
              * @var Payments $payment
              */
@@ -212,7 +203,7 @@ class HitPay
             $this->logger->error($e->getMessage());
         }
     }
-    
+
     public function checkData()
     {
         $quoteId = $this->webRequest->getParam('cart_id', false);
