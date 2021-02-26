@@ -11,9 +11,10 @@ define(
         'Magento_Paypal/js/action/set-payment-method',
         'Magento_Checkout/js/model/payment/additional-validators',
         'Magento_Checkout/js/model/quote',
-        'Magento_Customer/js/customer-data'
+        'Magento_Customer/js/customer-data',
+        'mage/url'
     ],
-    function ($, Component, setPaymentMethodAction, additionalValidators, quote, customerData) {
+    function ($, Component, setPaymentMethodAction, additionalValidators, quote, customerData, urlBuilder) {
         'use strict';
 
         return Component.extend({
@@ -60,7 +61,7 @@ define(
             },
 
             goToRedirect: function () {
-                window.location.href = '/hitpay/redirect';
+                window.location.href = urlBuilder.build('hitpay/redirect');
             },
 
             /** Redirect to hitpay */
@@ -72,7 +73,7 @@ define(
                         function () {
                             customerData.invalidate(['cart']);
                             $.mage.redirect(
-                                '/hitpay/redirect'
+                                urlBuilder.build('hitpay/redirect')
                             );
                         }
                     );
