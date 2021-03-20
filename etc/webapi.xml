@@ -7,7 +7,7 @@
 -->
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
-    <route url="/V1/hitpay-webhook/cart_id/:cart_id" method="POST">
+    <route url="/V1/hitpay-webhook/order_id/:order_id" method="POST">
         <service class="SoftBuild\HitPay\Api\ApiProviderInterface" method="execute"/>
         <resources>
             <resource ref="anonymous" />

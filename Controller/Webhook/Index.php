@@ -55,7 +55,7 @@ class Index extends Action
     {
 
         try {
-            if (($this->getRequest()->getParam('cart_id', false) == false)
+            if (($this->getRequest()->getParam('order_id', false) == false)
                 || ($this->getRequest()->getParam('hmac', false) == false)) {
                 return false;
             }

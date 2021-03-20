@@ -73,14 +73,14 @@ class Index extends Action
         }
 
         try {
-            if (!$this->hitPayService->checkPayment()) {
+            if ($this->hitPayService->checkPayment()) {
+                $this->_redirect('checkout/onepage/success');
+            }else{                
                 $this->_forward('unsuccess');
             }
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
+        } catch (\Exception $e) {            
             $this->_forward('unsuccess');
         }
-
         return $this->_pageFactory->create();
     }
 }

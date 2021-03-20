@@ -9,8 +9,8 @@ namespace SoftBuild\HitPay\Api;
 interface ApiProviderInterface
 {
     /**
-     * @param int $cart_id
+     * @param int $order_id
      * @return mixed
      */
-    public function execute(int $cart_id);
+    public function execute(int $order_id);
 }
