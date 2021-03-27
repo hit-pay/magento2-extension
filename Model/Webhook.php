@@ -32,13 +32,13 @@ class Webhook implements ApiProviderInterface
     }
 
     /**
-     * @param int $cart_id
+     * @param int $order_id
      * @return mixed|void
      */
-    public function execute(int $cart_id)
+    public function execute(int $order_id)
     {
         try {
-            if (($this->request->getParam('cart_id', false) == false)
+            if (($this->request->getParam('order_id', false) == false)
                 || ($this->request->getParam('hmac', false) == false)) {
                 return false;
             }
