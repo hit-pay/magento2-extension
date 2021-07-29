@@ -74,7 +74,7 @@ class Index extends Action
 
         try {
             if (!$this->hitPayService->checkPayment()) {
-                $this->_forward('unsuccess');
+                $this->_forward('success');
             }
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
