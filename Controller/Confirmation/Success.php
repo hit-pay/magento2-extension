@@ -38,13 +38,16 @@ class Success extends \Magento\Framework\App\Action\Action
        \Magento\Framework\View\Result\PageFactory $pageFactory,
        HitPay $hitPayService,
        \Magento\Framework\App\ResponseFactory $responseFactory,
-       \Magento\Framework\UrlInterface $url
+       \Magento\Framework\UrlInterface $url,
+       \Magento\Checkout\Model\Session $session
     )
     {
         $this->_pageFactory = $pageFactory;
         $this->hitPayService = $hitPayService;
         $this->responseFactory = $responseFactory;
         $this->url = $url;
+        $this->_session = $session;
+
         return parent::__construct($context);
     }
     /**
@@ -54,15 +57,7 @@ class Success extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $cartObject = $objectManager->create('Magento\Checkout\Model\Cart')->truncate();
-        $cartObject->saveQuote();
-
-        try {
-            $this->hitPayService->checkPayment();
-        } catch (\Exception $e) {
-            $this->logger->debug($e->getMessage());
-        }
+        $this->_session->clearQuote();
 
         return $this->_pageFactory->create();
     }
