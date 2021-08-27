@@ -39,6 +39,7 @@ class Index extends Action
      */
     private $url;
 
+    protected $quoteFactory;
     /**
      * Index constructor.
      * @param Context $context
@@ -50,10 +51,14 @@ class Index extends Action
         PageFactory $pageFactory,
         HitPay $hitPayService,
         \Magento\Framework\App\ResponseFactory $responseFactory,
-        \Magento\Framework\UrlInterface $url
+        \Magento\Framework\UrlInterface $url,
+        \Magento\Quote\Model\QuoteFactory $quoteFactory,
+        \Magento\Sales\Model\OrderFactory $orderFactory
     ) {
         $this->_pageFactory = $pageFactory;
         $this->hitPayService = $hitPayService;
+        $this->quoteFactory = $quoteFactory;
+        $this->orderFactory = $orderFactory;
         $this->responseFactory = $responseFactory;
         $this->url = $url;
 
@@ -66,21 +71,39 @@ class Index extends Action
      */
     public function execute()
     {
+        $quoteId = $this->getRequest()->getParam('cart_id');
         if ($this->getRequest()->getParam('status') == 'canceled') {
             $cartUrl = $this->_url->getUrl('checkout/index');
             $this->responseFactory->create()->setRedirect($cartUrl)->sendResponse();
             exit;
         }
-
         try {
-            if (!$this->hitPayService->checkPayment()) {
+            $i = 1;
+            while ($i <= 3){
+                $order =  $this->orderFactory->create()->load($quoteId,'quote_id');
+                
+                if(!empty($order->getIncrementId()))
+                {
+                    $quote = $this->quoteFactory->create()->load($quoteId);
+                    $quote->setIsActive(0);
+                    $quote->save();
+                    break;
+                }  
+                     
+            }
+            sleep(3);
+            if ($this->hitPayService->checkPayment()) {
                 $this->_forward('success');
             }
+            else {
+                $this->_forward('unsuccess');
+            }
         } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
+            $this->logger->error('Unsuccess'.$e->getMessage());
             $this->_forward('unsuccess');
         }
 
         return $this->_pageFactory->create();
     }
 }
+

@@ -170,4 +170,7 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Sales\Api\OrderManagementInterface">
+        <plugin name="after_place_order_operation" type="SoftBuild\HitPay\Plugin\OrderManagement"/>
+    </type>
 </config>
