@@ -61,18 +61,15 @@ class OrderManagement
         OrderManagementInterface $subject,
         OrderInterface $result
     ) {
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/Orderplugin.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
+
         $orderId = $result->getIncrementId();
         
         if ($orderId) {
-            $logger->info('Order id is '.$orderId);
+
             $autoInvoice = $this->scopeConfig->getValue('payment/hitpay_gateway/auto_invoice');
-            $logger->info('Order Invoice  enabled '.$autoInvoice);
+           
             $order = $this->orderFactory->create()->loadByIncrementId($orderId);
             $payment = $order->getPayment()->getMethodInstance();
-            $logger->info('Payment Code is '.$payment->getCode());
             if ($payment->getCode() == 'hitpay_gateway') {
  
                 // Check option createinvoice
