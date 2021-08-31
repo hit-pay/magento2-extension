@@ -41,6 +41,11 @@
                     <label>Debug</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="auto_invoice" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <label>Enabled Auto Invoice</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <group id="payment_systems" translate="label" type="text" sortOrder="50" showInDefault="1"
                        showInWebsite="1"
                        showInStore="1">

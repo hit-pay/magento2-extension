@@ -57,8 +57,6 @@ class Success extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        $this->_session->clearQuote();
-
         return $this->_pageFactory->create();
     }
 }
