@@ -57,45 +57,63 @@ class OrderManagement
         $this->orderFactory = $orderFactory;
         $this->paymentsFactory = $paymentsFactory;
     }
-    public function afterPlace(
-        OrderManagementInterface $subject,
-        OrderInterface $result
-    ) {
+    public function afterPlace(OrderManagementInterface $subject, OrderInterface $result) 
+    {
 
-        $orderId = $result->getIncrementId();
+        $check = 1;
         
-        if ($orderId) {
+        while($check) {
 
-            $autoInvoice = $this->scopeConfig->getValue('payment/hitpay_gateway/auto_invoice');
-           
-            $order = $this->orderFactory->create()->loadByIncrementId($orderId);
-            $payment = $order->getPayment()->getMethodInstance();
-            if ($payment->getCode() == 'hitpay_gateway') {
- 
-                // Check option createinvoice
-                $this->createInvoice($payment, $order, $autoInvoice);
-                //create notified invoice
-                $this->displayNotified($order, $payment, $autoInvoice);
+            // sleep(2); 
+
+            if($result->getIncrementId()){
+
+                $orderId = $result->getIncrementId();
+        
+                if ($orderId) {
+
+                    $autoInvoice = $this->scopeConfig->getValue('payment/hitpay_gateway/auto_invoice');
+                   
+                    $order = $this->orderFactory->create()->loadByIncrementId($orderId);
+                    $payment = $order->getPayment()->getMethodInstance();                   
+        
+                    if ($payment->getCode() == 'hitpay_gateway') {
+
+                        // Check option createinvoice
+                        $this->createInvoice($payment, $order, $autoInvoice);
+                        //create notified invoice
+                        $this->displayNotified($order, $payment, $autoInvoice);
+                    }
+                }
+
+                return $result;
             }
         }
-        return $result;
+
     }
     private function createInvoice($payment, $order, $autoInvoice)
     {
+
         if ($autoInvoice) {
+
             try {
                 if (!$order->canInvoice()) {
+
                     throw new \Magento\Framework\Exception\LocalizedException(
                         __('You cant create the Invoice of this order.')
                     );
                 }
 
                 $invoice = $this->invoiceService->prepareInvoice($order);
-                $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_ONLINE);
+
+                // $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_ONLINE);
+                $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_OFFLINE);
                 $invoice->register();
                 $invoice->getOrder()->setIsInProcess(true);
-                $transaction = $this->transaction->create()->addObject($invoice)->addObject($invoice->getOrder());
+                $order->addStatusHistoryComment('Automatically INVOICED', false);
+                $transaction = $this->transaction->create()->addObject($invoice)->addObject($invoice->getOrder());                
                 $transaction->save();
+                
                 //Show message create invoice
                 $this->messageManager->addSuccessMessage(__("Automatically generated Invoice."));
             } catch (\Exception $e) {

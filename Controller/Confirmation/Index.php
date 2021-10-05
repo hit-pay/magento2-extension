@@ -38,7 +38,6 @@ class Index extends Action
      * @var \Magento\Framework\UrlInterface
      */
     private $url;
-
     protected $quoteFactory;
     /**
      * Index constructor.
@@ -53,7 +52,8 @@ class Index extends Action
         \Magento\Framework\App\ResponseFactory $responseFactory,
         \Magento\Framework\UrlInterface $url,
         \Magento\Quote\Model\QuoteFactory $quoteFactory,
-        \Magento\Sales\Model\OrderFactory $orderFactory
+        \Magento\Sales\Model\OrderFactory $orderFactory,
+        \Psr\Log\LoggerInterface $logger
     ) {
         $this->_pageFactory = $pageFactory;
         $this->hitPayService = $hitPayService;
@@ -61,6 +61,7 @@ class Index extends Action
         $this->orderFactory = $orderFactory;
         $this->responseFactory = $responseFactory;
         $this->url = $url;
+        $this->logger = $logger;
 
         return parent::__construct($context);
     }
@@ -72,8 +73,11 @@ class Index extends Action
     public function execute()
     {
         $quoteId = $this->getRequest()->getParam('cart_id');
+        $hitpayServiceCheck = $this->hitPayService->checkPayment();
+
         if ($this->getRequest()->getParam('status') == 'canceled') {
             $cartUrl = $this->_url->getUrl('checkout/index');
+           
             $this->responseFactory->create()->setRedirect($cartUrl)->sendResponse();
             exit;
         }
@@ -82,6 +86,8 @@ class Index extends Action
             while ($i <= 3){
                 $order =  $this->orderFactory->create()->load($quoteId,'quote_id');
                 
+                
+
                 if(!empty($order->getIncrementId()))
                 {
                     $quote = $this->quoteFactory->create()->load($quoteId);
@@ -91,13 +97,26 @@ class Index extends Action
                 }  
                      
             }
-            sleep(3);
-            if ($this->hitPayService->checkPayment()) {
-                $this->_forward('success');
+
+            for($i=1 ; $i<=5 ; $i++){ 
+
+                if(!$this->hitPayService->checkPayment()){ 
+
+                    sleep(3); 
+
+                }else{ 
+
+                    $this->_forward('success'); 
+                    break; 
+                    
+                } 
             }
-            else {
+            
+            if(!$this->hitPayService->checkPayment()){
                 $this->_forward('unsuccess');
             }
+           
+        
         } catch (\Exception $e) {
             $this->logger->error('Unsuccess'.$e->getMessage());
             $this->_forward('unsuccess');
