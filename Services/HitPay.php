@@ -207,6 +207,7 @@ class HitPay
 
     public function checkData()
     {
+
         $quoteId = $this->webRequest->getParam('cart_id', false);
         $quote = $this->quoteRepository->get($quoteId);
 
@@ -224,6 +225,7 @@ class HitPay
 
                 $id = $this->resourcePaymentsFactory->create()->getIdByPaymentId($payment_request_id);
                 $saved_payment = $this->paymentsFactory->create()->load($id);
+
                 if ($saved_payment && !$saved_payment->getData('is_paid')) {
                     if ($this->webRequest->getParam('status', false) == 'completed'
                         && $saved_payment->getData('amount') == $this->webRequest->getParam('amount', false)
@@ -251,6 +253,7 @@ class HitPay
                     $store = $this->storeManager->getStore();
                     $websiteId = $this->storeManager->getStore()->getWebsiteId();
                     $customer = $this->customerFactory->create();
+
                     $customer->setWebsiteId($websiteId);
                     $customer->loadByEmail($quote->getBillingAddress()->getEmail());
                     if (!$customer->getId()) {
@@ -269,9 +272,10 @@ class HitPay
                     $quote->setCustomerIsGuest(true);
 
                     $quote->setCustomerId(null);
+
                     $quote->save();
 
-
+                    
                     $quote->setStore($store);
 
                     /*$customer = $this->customerRepository->getById($customer->getId());
@@ -281,13 +285,22 @@ class HitPay
 
                     $quote->setOrigOrderId($orderId);
                     $quote->save();
+                    
                 } else {
                     $orderId = $quote->getOrigOrderId();
                 }
 
                 $order = $this->order->load($orderId);
-                $order->setState($paymentStatus)->setStatus($paymentStatus);
-                $order->save();
+
+                $autoInvoice = $this->scopeConfig->getValue('payment/hitpay_gateway/auto_invoice');
+
+                if(!$autoInvoice || $autoInvoice){
+                    $order->setState('processing')->setStatus('processing');
+                    $order->save();
+                }else{
+                    $order->setState($paymentStatus)->setStatus($paymentStatus);
+                    $order->save();       
+                }
 
                 $saved_payment->setData('status', $this->request->getParam('status', false));
                 $saved_payment->setData('order_id', $order->getRealOrderId());
@@ -318,12 +331,15 @@ class HitPay
         $id = $this->resourcePaymentsFactory->create()->getIdByPaymentId(
             $this->request->getParam('reference', false)
         );
+   
         $savedPayment = $this->paymentsFactory->create()->load($id);
-
+        
         if ($savedPayment->getData('status') == 'completed'
-            /*&& $savedPayment->getData('is_paid')*/) {
-            $order = $this->order->load($savedPayment->getData('order_id'));
+            /*&& $savedPayment->getData('is_paid')*/) 
+        {
 
+            $order = $this->order->load($savedPayment->getData('order_id'));
+            
             $this->checkoutSession->setLastSuccessQuoteId($savedPayment->getData('cart_id'));
             $this->checkoutSession->setLastOrderId($savedPayment->getData('order_id'));
             $this->checkoutSession->setLastRealOrderId($savedPayment->getData('order_id'));
