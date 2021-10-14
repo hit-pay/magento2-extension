@@ -3,7 +3,7 @@
   "description": "Integration with payment gateway of hitpay",
   "require": {
     "php": ">=7.0",
-    "softbuild/hitpay-sdk": "2.0.*"
+    "softbuild/hitpay-sdk": "2.1.*"
   },
   "type": "magento2-module",
   "license": [
@@ -11,11 +11,15 @@
     "AFL-3.0"
   ],
   "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://urbanovichdi@bitbucket.org/urbanovichdi/hitpay-sdk.git"
-    }
-  ],
+		{
+			"type": "vcs",
+			"url": "https://github.com/hit-pay/hitpay-magento2.git"
+		},
+		{
+			"type": "vcs",
+			"url": "https://github.com/hit-pay/php-sdk.git"
+		}
+	],
   "autoload": {
     "files": [
       "registration.php"
