@@ -36,6 +36,12 @@ class Confirmation extends \Magento\Framework\App\Action\Action
                 $order = $this->orderFactory->create()->loadByIncrementId($orderId);
                  
                 if ($order->getId() > 0) {
+                    $state = $order->getState();
+                    
+                    if ($state == 'processing' || $state == 'complete' || $state == 'closed') {
+                       return $this->getResponse()->setRedirect($model->getCheckoutSuccessUrl(['order_id' => $orderId])); 
+                    }
+                    
                     $model->log('Order Status:'.$order->getStatus());
                     if ($params['status'] == 'canceled') {
                         throw new \Exception(__('Transaction canceled by customer/gateway. '));

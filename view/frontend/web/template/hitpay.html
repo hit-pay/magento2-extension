@@ -10,7 +10,41 @@
                name="payment[method]"
                class="radio"
                data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
-        <label data-bind="attr: {'for': getCode()}" class="label"><span data-bind="text: getTitle()"></span></label>
+        <label data-bind="attr: {'for': getCode()}" class="label">
+			<span data-bind="text: getTitle()"></span>
+			
+			<!-- ko if: visa -->
+            <img data-bind="attr: {src: getHitpayLogoPath('visa')}" class="payment-icon" title="Visa" />
+            <!-- /ko -->
+			<!-- ko if: master -->
+            <img data-bind="attr: {src: getHitpayLogoPath('master')}" class="payment-icon" title="Master Card" />
+            <!-- /ko -->
+			<!-- ko if: american_express -->
+            <img data-bind="attr: {src: getHitpayLogoPath('american_express')}" class="payment-icon" title="American Express" />
+            <!-- /ko -->
+			<!-- ko if: apple_pay -->
+            <img data-bind="attr: {src: getHitpayLogoPath('apple_pay')}" class="payment-icon" title="Apple Pay" />
+            <!-- /ko -->
+			<!-- ko if: google_pay -->
+            <img data-bind="attr: {src: getHitpayLogoPath('google_pay')}" class="payment-icon" title="Google Pay" />
+            <!-- /ko -->
+			<!-- ko if: paynow -->
+            <img data-bind="attr: {src: getHitpayLogoPath('paynow')}" class="payment-icon" title="PayNow QR"/>
+            <!-- /ko -->
+            <!-- ko if: grabpay -->
+            <img data-bind="attr: {src: getHitpayLogoPath('grabpay')}" class="payment-icon" title="GrabPay"/>
+            <!-- /ko -->
+			<!-- ko if: wechatpay -->
+            <img data-bind="attr: {src: getHitpayLogoPath('wechatpay')}" class="payment-icon" title="WeChatPay"/>
+            <!-- /ko -->
+			<!-- ko if: alipay -->
+            <img data-bind="attr: {src: getHitpayLogoPath('alipay')}" class="payment-icon" title="AliPay"/>
+            <!-- /ko -->
+			<!-- ko if: shopeepay -->
+            <img data-bind="attr: {src: getHitpayLogoPath('shopeepay')}" class="payment-icon" title="Shopee Pay"/>
+            <!-- /ko -->
+			
+		</label>
     </div>
 
     <div class="payment-method-content">

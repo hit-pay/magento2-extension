@@ -8,6 +8,8 @@ namespace SoftBuild\HitPay\Model;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\Escaper;
 use Magento\Payment\Helper\Data as PaymentHelper;
+use SoftBuild\HitPay\Model\System\Source\Paymentlogos;
+use Magento\Framework\View\Asset\Repository;
 
 class ConfigProvider implements ConfigProviderInterface
 {
@@ -27,6 +29,10 @@ class ConfigProvider implements ConfigProviderInterface
      * @var Escaper
      */
     protected $escaper;
+    
+    protected $paymentlogos;
+    
+    protected $assetRepo;
 
     /**
      * @param PaymentHelper $paymentHelper
@@ -34,9 +40,14 @@ class ConfigProvider implements ConfigProviderInterface
      */
     public function __construct(
         PaymentHelper $paymentHelper,
-        Escaper $escaper
+        Escaper $escaper,
+        Paymentlogos $paymentlogos,
+        Repository $assetRepo
     ) {
         $this->escaper = $escaper;
+        $this->paymentlogos = $paymentlogos;
+        $this->assetRepo = $assetRepo;
+        
         foreach ($this->methodCodes as $code) {
             $this->methods[$code] = $paymentHelper->getMethodInstance($code);
         }
@@ -52,6 +63,8 @@ class ConfigProvider implements ConfigProviderInterface
             if ($this->methods[$code]->isAvailable()) {
                 $config['payment']['instructions'][$code] = $this->getInstructions($code);
                 $config['payment'][$code]['redirectUrl'] = $this->methods[$code]->getCheckoutRedirectUrl();
+                $config['payment'][$code]['images'] = $this->getLogos($code);
+                $config['payment'][$code]['status'] = $this->getLogosStatus($code);
             }
         }
         return $config;
@@ -66,5 +79,39 @@ class ConfigProvider implements ConfigProviderInterface
     protected function getInstructions($code)
     {
         return nl2br($this->escaper->escapeHtml($this->methods[$code]->getInstructions()));
+    }
+    
+    public function getLogos($code)
+    {
+        $images = [];
+        foreach ($this->methodCodes as $code) {
+            $enabledLogos = $this->methods[$code]->getConfigValue('paymentlogos');
+            if (!empty($enabledLogos)) {
+                $enabledLogos = explode(',', $enabledLogos);
+                foreach ($enabledLogos as $logoCode) {
+                    $images[$logoCode] = $this->assetRepo->getUrl('SoftBuild_HitPay::images/'.$logoCode.'.svg');
+                }
+            }
+        }
+        return $images;
+    }
+    
+    public function getLogosStatus($code)
+    {
+        $status = [];
+        foreach ($this->methodCodes as $code) {
+            $enabledLogos = $this->methods[$code]->getConfigValue('paymentlogos');
+            if (!empty($enabledLogos)) {
+                $enabledLogos = explode(',', $enabledLogos);
+            } else {
+                $enabledLogos = [];
+            }
+            $logos = $this->paymentlogos->toOptionArray();
+            foreach ($logos as $logo) {
+                $logoCode = $logo['value'];
+                $status[$logoCode] = (int)(in_array($logoCode, $enabledLogos));
+            }
+        }
+        return $status;
     }
 }

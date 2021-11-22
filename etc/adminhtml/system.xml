@@ -27,6 +27,11 @@
                        showInWebsite="1" showInStore="1">
                     <label>Salt</label>
                 </field>
+                <field id="paymentlogos" translate="label" type="multiselect" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Payment Logos</label>
+                    <source_model>SoftBuild\HitPay\Model\System\Source\Paymentlogos</source_model>
+                    <comment>Selected logos will be displayed on the checkout.</comment>
+                </field>
 		<field id="auto_invoice" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1"
                        showInStore="1">
                     <label>Enabled Auto Invoice</label>

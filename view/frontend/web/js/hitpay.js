@@ -18,7 +18,17 @@ define([
 
     return Component.extend({
         defaults: {
-            template: 'SoftBuild_HitPay/hitpay'
+            template: 'SoftBuild_HitPay/hitpay',
+            visa: window.checkoutConfig.payment.hitpay.status.visa,
+            master: window.checkoutConfig.payment.hitpay.status.master,
+            american_express: window.checkoutConfig.payment.hitpay.status.american_express,
+            apple_pay: window.checkoutConfig.payment.hitpay.status.apple_pay,
+            google_pay: window.checkoutConfig.payment.hitpay.status.google_pay,
+            paynow: window.checkoutConfig.payment.hitpay.status.paynow,
+            grabpay: window.checkoutConfig.payment.hitpay.status.grabpay,
+            wechatpay: window.checkoutConfig.payment.hitpay.status.wechatpay,
+            alipay: window.checkoutConfig.payment.hitpay.status.alipay,
+            shopeepay: window.checkoutConfig.payment.hitpay.status.shopeepay,
         },
         getInstructions: function () {
             return window.checkoutConfig.payment.instructions[this.item.method];
@@ -29,6 +39,9 @@ define([
                 "additional_data": {
                 }
             };
+        },
+        getHitpayLogoPath: function (logo) {
+            return window.checkoutConfig.payment.hitpay.images[logo];
         },
         placeOrder: function (data, event) {
             if (event) {
