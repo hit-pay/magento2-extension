@@ -7,6 +7,7 @@ namespace SoftBuild\HitPay\Model;
 
 use Magento\Quote\Api\Data\PaymentInterface;
 use Magento\Framework\DataObject;
+use SoftBuild\HitPay\Services\Client;
 
 class Pay extends \Magento\Payment\Model\Method\AbstractMethod
 {
@@ -225,5 +226,45 @@ class Pay extends \Magento\Payment\Model\Method\AbstractMethod
             file_put_contents($this->directory_list->getPath('log') . '/hitpay.log', print_r($message, true), FILE_APPEND);
             file_put_contents($this->directory_list->getPath('log') . '/hitpay.log', "\n", FILE_APPEND);
         }
+    }
+    
+    public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
+    {
+        $order = $order = $payment->getOrder();
+        if ($order && $order->getId()) {
+            $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
+            if ($paymentMethod == 'hitpay') {
+                $payment_id = $payment->getRefundTransactionId();
+  
+                if (!empty($payment_id) && $amount > 0) {
+                    
+                    try {
+                        $client = new Client(
+                            $this->getConfigValue("api_key"),
+                            $this->getConfigValue("mode")
+                        );
+ 
+                        $refund_request_param = 'Order Id: '.$order->getId().', Payment Id: '.$payment_id.', Amount: '.$amount;
+
+                        $this->log('Refund Payment Request:');
+                        $this->log($refund_request_param);
+
+                        $result = $client->refund($payment_id, $amount);
+
+                        $this->log('Refund Payment Response:');
+                        $this->log((array)$result);
+
+                        $message = __('Refund successful. Refund Reference Id: '.$result->getId().', '
+                                . 'Payment Id: '.$payment_id.', Amount Refunded: '.$result->getAmountRefunded().', '
+                                . 'Payment Method: '.$result->getPaymentMethod().', Created At: '.$result->getCreatedAt());
+                        $order->addStatusHistoryComment($message);
+                        $order->save();
+                    } catch (\Exception $e) {
+                        throw new \Exception($e->getMessage());
+                     }
+                }
+            }
+        }
+        return $this;
     }
 }
