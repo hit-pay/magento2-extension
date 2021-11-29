@@ -76,5 +76,6 @@ class Confirmation extends \Magento\Framework\App\Action\Action
             $this->messageManager->addError($message);
             echo '<script>window.top.location.href = "'.$model->getCheckoutCartUrl().'";</script>';
         }
+        exit;
     }
 }
