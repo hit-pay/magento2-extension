@@ -52,8 +52,13 @@ class Status extends \Magento\Framework\App\Action\Action
             if ($status == 'pending') {
                 $status = 'wait';
             } else if ($status == 'completed') {
+                $orderState = $model->getConfigValue('new_order_status');
+                if (empty($orderState)) {
+                    $orderState = \Magento\Sales\Model\Order::STATE_PROCESSING;
+                }
+
                 $orderStatus = $order->getStatus();
-                if ($orderStatus == 'processing') {
+                if ($orderStatus == $orderState) {
                     $status = 'completed';
                 } else {
                     $status = $orderStatus;

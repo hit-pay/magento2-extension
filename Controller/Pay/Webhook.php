@@ -73,7 +73,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
                             $status = strip_tags($params['status']);
 
                             if ($status == 'completed'
-                                && number_format($order->getGrandTotal(), 2) == $params['amount']
+                                && number_format($order->getGrandTotal(), 2, '.', '') == $params['amount']
                                 && $order_id == $params['reference_number']
                                 && $order->getOrderCurrencyCode() == $params['currency']
                             ) {
@@ -83,11 +83,17 @@ class Webhook extends \Magento\Framework\App\Action\Action
                                 $hitpay_currency = $params['currency'];
                                 $hitpay_amount = $params['amount'];
                                 
-                                $order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING);
-                                $order->setStatus(\Magento\Sales\Model\Order::STATE_PROCESSING);
+                                $orderState = $model->getConfigValue('new_order_status');
+                                if (empty($orderState)) {
+                                    $orderState = \Magento\Sales\Model\Order::STATE_PROCESSING;
+                                }
+                                $orderStatus = $orderState;
+                                
+                                $order->setState($orderState);
+                                $order->setStatus($orderStatus);
                                 $order->setTotalPaid($order->getGrandTotal());
                                 $comment = __('HitPay payment is successful. '). __('Transaction ID: '). $payment_id;
-                                $order->addStatusHistoryComment($comment, \Magento\Sales\Model\Order::STATE_PROCESSING, true);
+                                $order->addStatusHistoryComment($comment, $orderStatus, true);
                                 $order->save();
                                 
                                 $this->orderSender->send($order, true);
