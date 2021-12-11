@@ -101,3 +101,7 @@ After click on “Place Order” Button: It will redirect you on payment page:
 After making a successful payment, it will redirect to the success page.
 
 ![success page](images/4-checkout-success.png)
+
+
+## Refunds
+- You can find more details here(https://www.notion.so/hitpay/Magento-2-Refunds-Instructions-9c3da2ccb9ce41ba9a248443ec9bc690)

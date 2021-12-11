@@ -11,7 +11,6 @@
                 </field>
                 <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title</label>
-                    <validate>required-entry</validate>
                     <comment>This controls the title which the user sees during checkout.</comment>
                 </field>
                 <field id="mode" translate="label" type="select" sortOrder="15" showInDefault="1"
@@ -22,10 +21,12 @@
                 <field id="api_key" translate="label"  sortOrder="30" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Api Key</label>
+                    <validate>required-entry</validate>
                 </field>
-                <field id="salt" translate="label"  sortOrder="30" showInDefault="1"
+                <field id="salt" translate="label"  sortOrder="32" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Salt</label>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="paymentlogos" translate="label" type="multiselect" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Payment Logos</label>
@@ -36,6 +37,11 @@
                        showInStore="1">
                     <label>Enabled Auto Invoice</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="new_order_status" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>New Order Status</label>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status\Newprocessing</source_model>
+                    <comment>This status will be set after successfull payment</comment>
                 </field>
                 <field id="debug" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Debug</label>

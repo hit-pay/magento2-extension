@@ -18,8 +18,6 @@ class Pay extends \Magento\Payment\Model\Method\AbstractMethod
      */
     protected $_code = 'hitpay';
     
-    const ALLOW_CURRENCY_CODE = 'SGD';
-    
     protected $_isGateway = true;
     protected $_canAuthorize = false;
     protected $_canCapture = false;
@@ -134,9 +132,19 @@ class Pay extends \Magento\Payment\Model\Method\AbstractMethod
         return $isAvailable;
     }
     
+    public function getTitle()
+    {
+        $title = $this->getConfigData('title');
+        $title = trim($title);
+        if (empty($title)) {
+            $title = 'HitPay Payment Gateway';
+        }
+        return $title;
+    }
+    
     public function canUseForCurrency($currencyCode)
     {
-        return $currencyCode === self::ALLOW_CURRENCY_CODE;
+        return true;
     }
     
     public function isInitializeNeeded()
