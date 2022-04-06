@@ -122,3 +122,12 @@ If you click the Credit Memo button in other pages, Magento will provide option 
 10. Refund is only applicable if the initial charge was made with PayNow or Card.
 ![](images/9.png)
 
+## Changelog
+
+= 1.0.0 =
+* Initial release.
+
+== Upgrade Notice ==
+
+= 2.0.6 =
+- Added FPX and Zip Payment logos selection

@@ -29,6 +29,8 @@ define([
             wechatpay: window.checkoutConfig.payment.hitpay.status.wechatpay,
             alipay: window.checkoutConfig.payment.hitpay.status.alipay,
             shopeepay: window.checkoutConfig.payment.hitpay.status.shopeepay,
+            fpx: window.checkoutConfig.payment.hitpay.status.fpx,
+            zip: window.checkoutConfig.payment.hitpay.status.zip,
         },
         getInstructions: function () {
             return window.checkoutConfig.payment.instructions[this.item.method];
