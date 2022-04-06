@@ -56,6 +56,14 @@ class Paymentlogos implements ArrayInterface
                 'value' => 'shopeepay',
                 'label' => __('Shopee Pay')
            ],
+            [
+                'value' => 'fpx',
+                'label' => __('FPX')
+           ],
+            [
+                'value' => 'zip',
+                'label' => __('Zip')
+           ],
         ];
     }
 }
