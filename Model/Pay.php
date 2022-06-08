@@ -28,6 +28,7 @@ class Pay extends \Magento\Payment\Model\Method\AbstractMethod
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
     protected $_isInitializeNeeded = true;
+    protected $_canRefundInvoicePartial = true;
     
     /**
      *

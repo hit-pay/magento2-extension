@@ -131,3 +131,6 @@ If you click the Credit Memo button in other pages, Magento will provide option 
 
 = 2.0.6 =
 - Added FPX and Zip Payment logos selection
+
+= 2.0.7 =
+- Partial quantity refund option enabled
