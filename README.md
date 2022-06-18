@@ -134,3 +134,6 @@ If you click the Credit Memo button in other pages, Magento will provide option 
 
 = 2.0.7 =
 - Partial quantity refund option enabled
+
+= 2.0.8 =
+- Fixed: Amount format greater 1000 data passed

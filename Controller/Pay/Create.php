@@ -39,7 +39,7 @@ class Create extends \Magento\Framework\App\Action\Action
                 $webhook = $model->getWebhookUrl(array('order_id' => $order->getIncrementId()) );
                 
                 $createPaymentRequest = new CreatePayment();
-                $createPaymentRequest->setAmount(number_format($order->getGrandTotal(), 2))
+                $createPaymentRequest->setAmount(number_format($order->getGrandTotal(), 2, '.', ''))
                     ->setCurrency($order->getOrderCurrencyCode())
                     ->setReferenceNumber($order->getIncrementId())
                     ->setWebhook($webhook)
@@ -61,7 +61,7 @@ class Create extends \Magento\Framework\App\Action\Action
                 
                 $savePayment = [
                     'payment_id' => $result->getId(),
-                    'amount' => number_format($order->getGrandTotal(), 2),
+                    'amount' => number_format($order->getGrandTotal(), 2, '.', ''),
                     'currency_id' => $order->getOrderCurrencyCode(),
                     'status' => $result->getStatus(),
                     'increment_id' => $order->getIncrementId(),
