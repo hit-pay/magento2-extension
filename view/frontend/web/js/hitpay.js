@@ -31,6 +31,12 @@ define([
             shopeepay: window.checkoutConfig.payment.hitpay.status.shopeepay,
             fpx: window.checkoutConfig.payment.hitpay.status.fpx,
             zip: window.checkoutConfig.payment.hitpay.status.zip,
+            atomeplus: window.checkoutConfig.payment.hitpay.status.atomeplus,
+            unionbank: window.checkoutConfig.payment.hitpay.status.unionbank,
+            qrph: window.checkoutConfig.payment.hitpay.status.qrph,
+            pesonet: window.checkoutConfig.payment.hitpay.status.pesonet,
+            gcash: window.checkoutConfig.payment.hitpay.status.gcash,
+            billease: window.checkoutConfig.payment.hitpay.status.billease,
         },
         getInstructions: function () {
             return window.checkoutConfig.payment.instructions[this.item.method];
