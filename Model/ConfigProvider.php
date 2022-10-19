@@ -84,7 +84,6 @@ class ConfigProvider implements ConfigProviderInterface
     public function getLogos($code)
     {
         $pngs = [
-            'atomeplus',
             'pesonet',
         ];
         $images = [];
