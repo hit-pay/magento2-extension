@@ -64,6 +64,30 @@ class Paymentlogos implements ArrayInterface
                 'value' => 'zip',
                 'label' => __('Zip')
            ],
+            [
+                'value' => 'atomeplus',
+                'label' => __('ATome+')
+            ],
+            [
+                'value' => 'unionbank',
+                'label' => __('Unionbank Online')
+            ],
+            [
+                'value' => 'qrph',
+                'label' => __('Instapay QR PH')
+            ],
+            [
+                'value' => 'pesonet',
+                'label' => __('PESONet')
+            ],
+            [
+                'value' => 'gcash',
+                'label' => __('GCash')
+            ],
+            [
+                'value' => 'billease',
+                'label' => __('Billease BNPL')
+            ],
         ];
     }
 }

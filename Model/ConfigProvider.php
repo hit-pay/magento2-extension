@@ -83,13 +83,20 @@ class ConfigProvider implements ConfigProviderInterface
     
     public function getLogos($code)
     {
+        $pngs = [
+            'pesonet',
+        ];
         $images = [];
         foreach ($this->methodCodes as $code) {
             $enabledLogos = $this->methods[$code]->getConfigValue('paymentlogos');
             if (!empty($enabledLogos)) {
                 $enabledLogos = explode(',', $enabledLogos);
                 foreach ($enabledLogos as $logoCode) {
-                    $images[$logoCode] = $this->assetRepo->getUrl('SoftBuild_HitPay::images/'.$logoCode.'.svg');
+                    $extn = 'svg';
+                    if (in_array($logoCode, $pngs)) {
+                        $extn = 'png';
+                    }
+                    $images[$logoCode] = $this->assetRepo->getUrl('SoftBuild_HitPay::images/'.$logoCode.'.'.$extn);
                 }
             }
         }

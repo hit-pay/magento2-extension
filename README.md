@@ -137,3 +137,6 @@ If you click the Credit Memo button in other pages, Magento will provide option 
 
 = 2.0.8 =
 - Fixed: Amount format greater 1000 data passed
+
+= 2.0.9 =
+- Added Atome and Billease, GCash, Union Bank, QRPH, PESONet logos
