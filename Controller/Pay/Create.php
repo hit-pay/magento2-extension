@@ -24,7 +24,12 @@ class Create extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
+        $response = array();
+        $dropInAjax = 0;
+        
         try {
+            $dropInAjax = (int)$this->getRequest()->getParam('drop_in_ajax');
+            
             $model = $this->_objectManager->get('SoftBuild\HitPay\Model\Pay');
             $session = $this->_objectManager->get('Magento\Checkout\Model\Session');
             $order = $model->getOrder();
@@ -69,12 +74,31 @@ class Create extends \Magento\Framework\App\Action\Action
                 $this->helper->addPaymentResponse($order->getId(), json_encode($savePayment));
                                 
                 if ($result->getStatus() == 'pending') {
-                    echo '<script>window.top.location.href = "'.$result->getUrl().'";</script>';
+                    if ($dropInAjax) {
+                        $response['redirect_url'] = $redirectUrl;
+                        $response['cart_url'] = $model->getCheckoutCartUrl();
+                        $response['status'] = 'success';
+                        $response['payment_request_id'] = $result->getId();
+                        $response['payment_url'] = $result->getUrl();
+                        $response['order_id'] = $result->getUrl();
+                        
+                        $domain = 'sandbox.hit-pay.com';
+                        if ($model->getConfigValue("mode")) {
+                            $domain = 'hit-pay.com';
+                        }
+                        $response['domain'] = $domain;
+                        $response['apiDomain'] = $domain;
+                        
+                        echo json_encode($response);
+                        exit;
+                    } else {
+                        echo '<script>window.top.location.href = "'.$result->getUrl().'";</script>';
+                    }
                 } else {
                     throw new \Exception(sprintf(__('Status from gateway is %s .'), $result->getStatus()));
                 }
             } else {
-                echo '<script>window.top.location.href = "'.$model->getCheckoutCartUrl().'";</script>';
+                throw new \Exception(sprintf(__('Checkout session expired it seems')));
             }
         } catch (\Exception $e) {
             $error_message = $e->getMessage();
@@ -86,7 +110,16 @@ class Create extends \Magento\Framework\App\Action\Action
                 $session->restoreQuote();
             }
             $this->messageManager->addError($message);
-            echo '<script>window.top.location.href = "'.$model->getCheckoutCartUrl().'";</script>';
+            
+            if ($dropInAjax) {
+                $response['status'] = 'error';
+                $response['message'] = $message;
+                $response['redirect_url'] = $model->getCheckoutCartUrl();
+                echo json_encode($response);
+                exit;
+            } else {
+                echo '<script>window.top.location.href = "'.$model->getCheckoutCartUrl().'";</script>';
+            }
         }
         exit;
     }

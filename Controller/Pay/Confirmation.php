@@ -43,7 +43,7 @@ class Confirmation extends \Magento\Framework\App\Action\Action
                     }
                     
                     $model->log('Order Status:'.$order->getStatus());
-                    if ($params['status'] == 'canceled') {
+                    if (isset($params['status']) && $params['status'] == 'canceled') {
                         throw new \Exception(__('Transaction canceled by customer/gateway. '));
                     }
                     

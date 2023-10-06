@@ -63,8 +63,10 @@ class ConfigProvider implements ConfigProviderInterface
             if ($this->methods[$code]->isAvailable()) {
                 $config['payment']['instructions'][$code] = $this->getInstructions($code);
                 $config['payment'][$code]['redirectUrl'] = $this->methods[$code]->getCheckoutRedirectUrl();
+                $config['payment'][$code]['cartUrl'] = $this->methods[$code]->getCheckoutCartUrl();
                 $config['payment'][$code]['images'] = $this->getLogos($code);
                 $config['payment'][$code]['status'] = $this->getLogosStatus($code);
+                $config['payment'][$code]['dropIn'] = (int)$this->methods[$code]->getConfigValue('checkout_mode');
             }
         }
         return $config;
@@ -85,6 +87,25 @@ class ConfigProvider implements ConfigProviderInterface
     {
         $pngs = [
             'pesonet',
+            'eftpos',
+            'doku',
+            'philtrustbank',
+            'allbank',
+            'aub',
+            'chinabank',
+            'instapay',
+            'landbank',
+            'metrobank',
+            'pnb',
+            'queenbank',
+            'ussc',
+            'bayad',
+            'cebuanalhuillier',
+            'psbank',
+            'robinsonsbank',
+            'doku_wallet',
+            'favepay',
+            'shopback_paylater'
         ];
         $images = [];
         foreach ($this->methodCodes as $code) {

@@ -3,4 +3,7 @@
     <event name="checkout_submit_before">
         <observer name="hitpay_checkout_submit_before" instance="SoftBuild\HitPay\Observer\CheckoutSubmitBefore" />
     </event>
+    <event name="layout_generate_blocks_after">
+        <observer name="hitpay_layout_generate_blocks_after" instance="SoftBuild\HitPay\Observer\AddLink" />
+    </event>
 </config>
