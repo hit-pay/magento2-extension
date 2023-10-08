@@ -17,6 +17,7 @@ define([
     'use strict';
 
     return Component.extend({
+
         defaults: {
             template: 'SoftBuild_HitPay/hitpay',
             visa: window.checkoutConfig.payment.hitpay.status.visa,
@@ -37,6 +38,51 @@ define([
             pesonet: window.checkoutConfig.payment.hitpay.status.pesonet,
             gcash: window.checkoutConfig.payment.hitpay.status.gcash,
             billease: window.checkoutConfig.payment.hitpay.status.billease,
+            eftpos: window.checkoutConfig.payment.hitpay.status.eftpos,
+            maestro: window.checkoutConfig.payment.hitpay.status.maestro,
+            alfamart: window.checkoutConfig.payment.hitpay.status.alfamart,
+            indomaret: window.checkoutConfig.payment.hitpay.status.indomaret,
+            dana: window.checkoutConfig.payment.hitpay.status.dana,
+            gopay: window.checkoutConfig.payment.hitpay.status.gopay,
+            linkaja: window.checkoutConfig.payment.hitpay.status.linkaja,
+            ovo: window.checkoutConfig.payment.hitpay.status.ovo,
+            qris: window.checkoutConfig.payment.hitpay.status.qris,
+            danamononline: window.checkoutConfig.payment.hitpay.status.danamononline,
+            permata: window.checkoutConfig.payment.hitpay.status.permata,
+            bsi: window.checkoutConfig.payment.hitpay.status.bsi,
+            bca: window.checkoutConfig.payment.hitpay.status.bca,
+            bni: window.checkoutConfig.payment.hitpay.status.bni,
+            bri: window.checkoutConfig.payment.hitpay.status.bri,
+            cimb: window.checkoutConfig.payment.hitpay.status.cimb,
+            doku: window.checkoutConfig.payment.hitpay.status.doku,
+            mandiri: window.checkoutConfig.payment.hitpay.status.mandiri,
+            akulaku: window.checkoutConfig.payment.hitpay.status.akulaku,
+            kredivo: window.checkoutConfig.payment.hitpay.status.kredivo,
+            philtrustbank: window.checkoutConfig.payment.hitpay.status.philtrustbank,
+            allbank: window.checkoutConfig.payment.hitpay.status.allbank,
+            aub: window.checkoutConfig.payment.hitpay.status.aub,
+            chinabank: window.checkoutConfig.payment.hitpay.status.chinabank,
+            instapay: window.checkoutConfig.payment.hitpay.status.instapay,
+            landbank: window.checkoutConfig.payment.hitpay.status.landbank,
+            metrobank: window.checkoutConfig.payment.hitpay.status.metrobank,
+            pnb: window.checkoutConfig.payment.hitpay.status.pnb,
+            queenbank: window.checkoutConfig.payment.hitpay.status.queenbank,
+            rcbc: window.checkoutConfig.payment.hitpay.status.rcbc,
+            tayocash: window.checkoutConfig.payment.hitpay.status.tayocash,
+            ussc: window.checkoutConfig.payment.hitpay.status.ussc,
+            bayad: window.checkoutConfig.payment.hitpay.status.bayad,
+            cebuanalhuillier: window.checkoutConfig.payment.hitpay.status.cebuanalhuillier,
+            ecpay: window.checkoutConfig.payment.hitpay.status.ecpay,
+            palawan: window.checkoutConfig.payment.hitpay.status.palawan,
+            bpi: window.checkoutConfig.payment.hitpay.status.bpi,
+            psbank: window.checkoutConfig.payment.hitpay.status.psbank,
+            robinsonsbank: window.checkoutConfig.payment.hitpay.status.robinsonsbank,
+            diners_club: window.checkoutConfig.payment.hitpay.status.diners_club,
+            discover: window.checkoutConfig.payment.hitpay.status.discover,
+            doku_wallet: window.checkoutConfig.payment.hitpay.status.doku_wallet,
+            grab_paylater: window.checkoutConfig.payment.hitpay.status.grab_paylater,
+            favepay: window.checkoutConfig.payment.hitpay.status.favepay,
+            shopback_paylater: window.checkoutConfig.payment.hitpay.status.shopback_paylater,
         },
         getInstructions: function () {
             return window.checkoutConfig.payment.instructions[this.item.method];
@@ -69,9 +115,55 @@ define([
             return false;
         },
         afterPlaceOrder: function () {
+            var self = this;
             var method = this.getCode();
             var urlRedirect = window.checkoutConfig.payment[method].redirectUrl;
-            window.location.replace(urlRedirect);
+            
+            if (window.checkoutConfig.payment[method].dropIn == 1) {
+                $.getJSON(urlRedirect, {drop_in_ajax: 1}, function (apiResponse) {
+                    $.ajaxSetup({
+                        cache: false
+                    });
+                    if (apiResponse.status == 'error') {
+                        alert(apiResponse.message);
+                        window.location.replace(apiResponse.redirect_url);
+                    } else{
+                        if (!window.HitPay.inited) {
+                            window.HitPay.init(apiResponse.payment_url, {
+                              domain: apiResponse.domain,
+                              apiDomain: apiResponse.apiDomain,
+                            },
+                            {
+                              onClose: self.onHitpayDropInClose,
+                              onSuccess: self.onHitpayDropInSuccess,
+                              onError: self.onHitpayDropInError
+                            });
+                        }
+ 
+                        hitpayRedirectUrl = apiResponse.redirect_url;
+                        hitpayPaymentId = apiResponse.payment_request_id;
+
+                        window.HitPay.toggle({
+                            paymentRequest: apiResponse.payment_request_id,          
+                        });
+                    }
+                })
+                .fail(function(jqXHR, textStatus, errorThrown) { 
+                    alert('Site server error while creating a payment request.'+errorThrown);
+                });
+            } else {
+                window.location.replace(urlRedirect);
+            }
+        },
+        onHitpayDropInSuccess: function (data) {
+            location.href = hitpayRedirectUrl+'?reference='+hitpayPaymentId+'&status='
+        },
+        onHitpayDropInClose: function (data) {
+            location.href = hitpayRedirectUrl+'?reference='+hitpayPaymentId+'&status=canceled'
+        },
+        onHitpayDropInError: function (error) {
+            alert('Site server error while creating a payment request. Error: ' + error);
+            location.href = window.checkoutConfig.payment[method].cartUrl;
         }
     });
 });

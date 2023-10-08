@@ -4,6 +4,11 @@
  * See COPYING.txt for license details.
  */
 -->
+<style>
+	label[for='hitpay'] img{
+		max-width:50px;
+	}
+</style>
 <div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
     <div class="payment-method-title field choice">
         <input type="radio"
@@ -67,7 +72,141 @@
 			<!-- ko if: billease -->
             <img data-bind="attr: {src: getHitpayLogoPath('billease')}" class="payment-icon" title="Billease BNPL"/>
             <!-- /ko -->
-			
+			<!-- ko if: eftpos -->
+            <img data-bind="attr: {src: getHitpayLogoPath('eftpos')}" class="payment-icon" title="eftpos"/>
+			<!-- /ko -->
+            <!-- ko if: maestro -->
+            <img data-bind="attr: {src: getHitpayLogoPath('maestro')}" class="payment-icon" title="maestro"/>
+			<!-- /ko -->
+            <!-- ko if: alfamart -->
+            <img data-bind="attr: {src: getHitpayLogoPath('alfamart')}" class="payment-icon" title="Alfamart"/>
+			<!-- /ko -->
+            <!-- ko if: indomaret -->
+            <img data-bind="attr: {src: getHitpayLogoPath('indomaret')}" class="payment-icon" title="Indomaret"/>
+			<!-- /ko -->
+            <!-- ko if: dana -->
+            <img data-bind="attr: {src: getHitpayLogoPath('dana')}" class="payment-icon" title="DANA"/>
+			<!-- /ko -->
+            <!-- ko if: gopay -->
+            <img data-bind="attr: {src: getHitpayLogoPath('gopay')}" class="payment-icon" title="gopay"/>
+			<!-- /ko -->
+            <!-- ko if: linkaja -->
+            <img data-bind="attr: {src: getHitpayLogoPath('linkaja')}" class="payment-icon" title="Link Aja!"/>
+			<!-- /ko -->
+            <!-- ko if: ovo -->
+            <img data-bind="attr: {src: getHitpayLogoPath('ovo')}" class="payment-icon" title="OVO"/>
+			<!-- /ko -->
+            <!-- ko if: qris -->
+            <img data-bind="attr: {src: getHitpayLogoPath('qris')}" class="payment-icon" title="QRIS"/>
+			<!-- /ko -->
+            <!-- ko if: danamononline -->
+            <img data-bind="attr: {src: getHitpayLogoPath('danamononline')}" class="payment-icon" title="Bank Danamon"/>
+			<!-- /ko -->
+            <!-- ko if: permata -->
+            <img data-bind="attr: {src: getHitpayLogoPath('permata')}" class="payment-icon" title="PermataBank"/>
+			<!-- /ko -->
+            <!-- ko if: bsi -->
+            <img data-bind="attr: {src: getHitpayLogoPath('bsi')}" class="payment-icon" title="Bank Syariah Indonesia"/>
+			<!-- /ko -->
+            <!-- ko if: bca -->
+            <img data-bind="attr: {src: getHitpayLogoPath('bca')}" class="payment-icon" title="BCA"/>
+			<!-- /ko -->
+            <!-- ko if: bni -->
+            <img data-bind="attr: {src: getHitpayLogoPath('bni')}" class="payment-icon" title="BNI"/>
+			<!-- /ko -->
+            <!-- ko if: bri -->
+            <img data-bind="attr: {src: getHitpayLogoPath('bri')}" class="payment-icon" title="BRI"/>
+			<!-- /ko -->
+            <!-- ko if: cimb -->
+            <img data-bind="attr: {src: getHitpayLogoPath('cimb')}" class="payment-icon" title="CIMB Niaga"/>
+			<!-- /ko -->
+            <!-- ko if: doku -->
+            <img data-bind="attr: {src: getHitpayLogoPath('doku')}" class="payment-icon" title="DOKU"/>
+			<!-- /ko -->
+            <!-- ko if: mandiri -->
+            <img data-bind="attr: {src: getHitpayLogoPath('mandiri')}" class="payment-icon" title="Mandiri"/>
+			<!-- /ko -->
+            <!-- ko if: akulaku -->
+            <img data-bind="attr: {src: getHitpayLogoPath('akulaku')}" class="payment-icon" title="AkuLaku BNPL"/>
+			<!-- /ko -->
+            <!-- ko if: kredivo -->
+            <img data-bind="attr: {src: getHitpayLogoPath('kredivo')}" class="payment-icon" title="Kredivo BNPL"/>
+			<!-- /ko -->
+            <!-- ko if: philtrustbank -->
+            <img data-bind="attr: {src: getHitpayLogoPath('philtrustbank')}" class="payment-icon" title="PHILTRUST BANK"/>
+			<!-- /ko -->
+            <!-- ko if: allbank -->
+            <img data-bind="attr: {src: getHitpayLogoPath('allbank')}" class="payment-icon" title="AllBank"/>
+			<!-- /ko -->
+            <!-- ko if: aub -->
+            <img data-bind="attr: {src: getHitpayLogoPath('aub')}" class="payment-icon" title="ASIA UNITED BANK"/>
+			<!-- /ko -->
+            <!-- ko if: chinabank -->
+            <img data-bind="attr: {src: getHitpayLogoPath('chinabank')}" class="payment-icon" title="CHINABANK"/>
+			<!-- /ko -->
+            <!-- ko if: instapay -->
+            <img data-bind="attr: {src: getHitpayLogoPath('instapay')}" class="payment-icon" title="instaPay"/>
+			<!-- /ko -->
+            <!-- ko if: landbank -->
+            <img data-bind="attr: {src: getHitpayLogoPath('landbank')}" class="payment-icon" title="LANDBANK"/>
+			<!-- /ko -->
+            <!-- ko if: metrobank -->
+            <img data-bind="attr: {src: getHitpayLogoPath('metrobank')}" class="payment-icon" title="Metrobank"/>
+			<!-- /ko -->
+            <!-- ko if: pnb -->
+            <img data-bind="attr: {src: getHitpayLogoPath('pnb')}" class="payment-icon" title="PNB"/>
+			<!-- /ko -->
+            <!-- ko if: queenbank -->
+            <img data-bind="attr: {src: getHitpayLogoPath('queenbank')}" class="payment-icon" title="QUEENBANK"/>
+			<!-- /ko -->
+            <!-- ko if: rcbc -->
+            <img data-bind="attr: {src: getHitpayLogoPath('rcbc')}" class="payment-icon" title="RCBC"/>
+			<!-- /ko -->
+            <!-- ko if: tayocash -->
+            <img data-bind="attr: {src: getHitpayLogoPath('tayocash')}" class="payment-icon" title="TayoCash"/>
+			<!-- /ko -->
+            <!-- ko if: ussc -->
+            <img data-bind="attr: {src: getHitpayLogoPath('ussc')}" class="payment-icon" title="USSC"/>
+			<!-- /ko -->
+            <!-- ko if: bayad -->
+            <img data-bind="attr: {src: getHitpayLogoPath('bayad')}" class="payment-icon" title="bayad"/>
+			<!-- /ko -->
+            <!-- ko if: cebuanalhuillier -->
+            <img data-bind="attr: {src: getHitpayLogoPath('cebuanalhuillier')}" class="payment-icon" title="CEBUANA LHUILLIER"/>
+			<!-- /ko -->
+            <!-- ko if: ecpay -->
+            <img data-bind="attr: {src: getHitpayLogoPath('ecpay')}" class="payment-icon" title="ecPay"/>
+			<!-- /ko -->
+            <!-- ko if: palawan -->
+            <img data-bind="attr: {src: getHitpayLogoPath('palawan')}" class="payment-icon" title="PALAWAN PAWNSHOP"/>
+			<!-- /ko -->
+            <!-- ko if: bpi -->
+            <img data-bind="attr: {src: getHitpayLogoPath('bpi')}" class="payment-icon" title="BPI"/>
+			<!-- /ko -->
+            <!-- ko if: psbank -->
+            <img data-bind="attr: {src: getHitpayLogoPath('psbank')}" class="payment-icon" title="PSBank"/>
+			<!-- /ko -->
+            <!-- ko if: robinsonsbank -->
+            <img data-bind="attr: {src: getHitpayLogoPath('robinsonsbank')}" class="payment-icon" title="Robinsons Bank"/>
+			<!-- /ko -->
+            <!-- ko if: diners_club -->
+            <img data-bind="attr: {src: getHitpayLogoPath('diners_club')}" class="payment-icon" title="Diners Club"/>
+			<!-- /ko -->
+            <!-- ko if: discover -->
+            <img data-bind="attr: {src: getHitpayLogoPath('discover')}" class="payment-icon" title="Discover"/>
+			<!-- /ko -->
+            <!-- ko if: doku_wallet -->
+            <img data-bind="attr: {src: getHitpayLogoPath('doku_wallet')}" class="payment-icon" title="DOKU Wallet"/>
+			<!-- /ko -->
+            <!-- ko if: grab_paylater -->
+            <img data-bind="attr: {src: getHitpayLogoPath('grab_paylater')}" class="payment-icon" title="PayLater by Grab"/>
+			<!-- /ko -->
+            <!-- ko if: favepay -->
+            <img data-bind="attr: {src: getHitpayLogoPath('favepay')}" class="payment-icon" title="FavePay"/>
+			<!-- /ko -->
+            <!-- ko if: shopback_paylater -->
+            <img data-bind="attr: {src: getHitpayLogoPath('shopback_paylater')}" class="payment-icon" title="ShopBack PayLater"/>
+			<!-- /ko -->
 		</label>
     </div>
 
