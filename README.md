@@ -122,6 +122,14 @@ If you click the Credit Memo button in other pages, Magento will provide option 
 10. Refund is only applicable if the initial charge was made with PayNow or Card.
 ![](images/9.png)
 
+## Checkout UI Drop-in (Popup) Settings
+
+![](images/1-drop-in-settings.png)
+
+## Checkout UI Drop-in (Popup)
+
+![](images/2-drop-in-frontend.png)
+
 ## Changelog
 
 = 1.0.0 =
