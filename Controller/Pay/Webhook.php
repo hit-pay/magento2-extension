@@ -104,7 +104,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
                                 $this->helper->updatePaymentData($orderEntityId, 'status', $status);
                                 
                                 if ($model->getConfigValue("auto_invoice")) {
-                                    $this->createInvoice($order, $payment_id);
+                                    $this->createInvoice($order, $payment_id, $model);
                                 }
 
                             } elseif ($status == 'failed') {
@@ -175,28 +175,39 @@ class Webhook extends \Magento\Framework\App\Action\Action
         exit;
     }
     
-    public function createInvoice($order, $payment_id)
+    public function createInvoice($order, $payment_id, $model)
     {
-        if(!$order->canInvoice()) {
-            throw new \Exception(__('Cannot create an invoice.'));
+        try {
+            if(!$order->canInvoice()) {
+                throw new \Exception(__('Cannot create an invoice.'));
+            }
+
+            $invoiceService = $this->_objectManager->get('Magento\Sales\Model\Service\InvoiceService');
+
+            $invoice = $invoiceService->prepareInvoice($order);
+
+            if (!$invoice->getTotalQty()) {
+                throw new \Exception(__('Cannot create an invoice without products.'));
+            }
+
+            $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_OFFLINE);
+            $invoice->register();
+            $invoice->setTransactionId($payment_id);
+            $invoice->save();
+
+            $transaction  = $this->_objectManager->get('Magento\Framework\DB\Transaction');
+            $transactionSave = $transaction->addObject($invoice);
+            $transaction->addObject($invoice->getOrder());
+            $transactionSave->save();
+        } catch (\Exception $e) {
+            $model->log('Webhook Invoice Catch');
+            $model->log('Exception:'.$e->getMessage());
+
+            $status = \Magento\Sales\Model\Order::STATE_PROCESSING;
+
+            $comment =  __('Invoice creation failed. Error: '.$e->getMessage());
+            $order->addStatusHistoryComment($comment);
+            $order->save();
         }
-        
-        $invoiceService = $this->_objectManager->get('Magento\Sales\Model\Service\InvoiceService');
-
-        $invoice = $invoiceService->prepareInvoice($order);
-
-        if (!$invoice->getTotalQty()) {
-            throw new \Exception(__('Cannot create an invoice without products.'));
-        }
-
-        $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_OFFLINE);
-        $invoice->register();
-        $invoice->setTransactionId($payment_id);
-        $invoice->save();
-        
-        $transaction  = $this->_objectManager->get('Magento\Framework\DB\Transaction');
-        $transactionSave = $transaction->addObject($invoice);
-        $transaction->addObject($invoice->getOrder());
-        $transactionSave->save();
     }
 }
