@@ -151,3 +151,6 @@ If you click the Credit Memo button in other pages, Magento will provide option 
 
 = 2.1.0 =
 - Drop-In (Popup) feature included and added 45 new payment logos
+
+= 2.1.1 =
+- Fixed: Invoice creation failed causing the order canceled
