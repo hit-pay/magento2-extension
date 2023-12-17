@@ -59,10 +59,19 @@ class Pay extends \Magento\Payment\Model\Method\AbstractMethod
      */
     protected $urlBuilder;
     
+	/**
+     * @var \Magento\Framework\App\Filesystem\DirectoryList
+     */
     protected $directory_list;
+	
+	/**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $storeManager;
     
     public function __construct(
         \SoftBuild\HitPay\Helper\Data $hitpayHelper,
+		\Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Checkout\Model\Session $orderSession,
         \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magento\Customer\Model\Session $customerSession,
@@ -86,6 +95,7 @@ class Pay extends \Magento\Payment\Model\Method\AbstractMethod
         $this->customerSession = $customerSession;
         $this->urlBuilder = $urlBuilder;
         $this->directory_list = $directory_list;
+		$this->storeManager = $storeManager;
 
         parent::__construct(
             $context,
@@ -116,7 +126,8 @@ class Pay extends \Magento\Payment\Model\Method\AbstractMethod
     {
         $pathConfig = 'payment/' . $this->_code . "/" . $key;
         $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
-        return $this->_scopeConfig->getValue($pathConfig, $storeScope);
+		$storeId = (int)$this->storeManager->getStore()->getStoreId();
+        return $this->_scopeConfig->getValue($pathConfig, $storeScope, $storeId);
     }
     
     public function isAvailable(\Magento\Quote\Api\Data\CartInterface $quote = null)
