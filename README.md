@@ -154,3 +154,12 @@ If you click the Credit Memo button in other pages, Magento will provide option 
 
 = 2.1.1 =
 - Fixed: Invoice creation failed causing the order canceled
+
+= 2.1.2 =
+* Jul 18, 2024
+* Added DuitNow, Touch n Go and Boost logos
+* Fixed Hitpay Fee Currency Issue
+* Fixed Admin Payment method and Fee display error for multi-store
+* Fixed Admin refund error for multi-store
+* Fixed Success page status display loader issue when reloading the page
+* Plugin tested on Magento 2.4.7-p1

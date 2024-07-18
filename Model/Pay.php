@@ -122,11 +122,15 @@ class Pay extends \Magento\Payment\Model\Method\AbstractMethod
         return '';
     }
     
-    public function getConfigValue($key)
+    public function getConfigValue($key, $forceStoreId=false, $storeId=0)
     {
         $pathConfig = 'payment/' . $this->_code . "/" . $key;
         $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
-		$storeId = (int)$this->storeManager->getStore()->getStoreId();
+        
+        if (!$forceStoreId) {
+            $storeId = (int)$this->storeManager->getStore()->getStoreId();
+        }
+        
         return $this->_scopeConfig->getValue($pathConfig, $storeScope, $storeId);
     }
     
@@ -260,8 +264,8 @@ class Pay extends \Magento\Payment\Model\Method\AbstractMethod
                     
                     try {
                         $client = new Client(
-                            $this->getConfigValue("api_key"),
-                            $this->getConfigValue("mode")
+                            $this->getConfigValue("api_key", true, $order->getStoreId()),
+                            $this->getConfigValue("mode", true, $order->getStoreId())
                         );
  
                         $refund_request_param = 'Order Id: '.$order->getId().', Payment Id: '.$payment_id.', Amount: '.$amount;
@@ -280,6 +284,8 @@ class Pay extends \Magento\Payment\Model\Method\AbstractMethod
                         $order->addStatusHistoryComment($message);
                         $order->save();
                     } catch (\Exception $e) {
+                        $this->log('Refund Payment Error:');
+                        $this->log($e->getMessage());
                         throw new \Exception($e->getMessage());
                      }
                 }

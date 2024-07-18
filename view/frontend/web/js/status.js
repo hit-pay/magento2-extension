@@ -36,7 +36,7 @@ require(['jquery'], function($jHitpay){
                             $jHitpay('.payment_status_failed').show();
                             isStatusReceived = true;
                             //setTimeout(function(){window.location.href = data.redirect;}, 5000);
-                        } else if (data.status == 'completed') {
+                        } else if (data.status == 'completed' || data.status == 'complete' || data.status == 'closed') {
                             $jHitpay('.payment_pending').hide();
                             $jHitpay('.payment_status_complete').show();
                             isStatusReceived = true;

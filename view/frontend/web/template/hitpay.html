@@ -207,7 +207,16 @@
             <!-- ko if: shopback_paylater -->
             <img data-bind="attr: {src: getHitpayLogoPath('shopback_paylater')}" class="payment-icon" title="ShopBack PayLater"/>
 			<!-- /ko -->
-		</label>
+            <!-- ko if: duitnow -->
+            <img data-bind="attr: {src: getHitpayLogoPath('duitnow')}" class="payment-icon" title="DuitNow"/>
+            <!-- /ko -->
+            <!-- ko if: touchngo -->
+            <img data-bind="attr: {src: getHitpayLogoPath('touchngo')}" class="payment-icon" title="Touch 'n Go"/>
+            <!-- /ko -->
+            <!-- ko if: boost -->
+            <img data-bind="attr: {src: getHitpayLogoPath('boost')}" class="payment-icon" title="Boost"/>
+            <!-- /ko -->            
+	</label>
     </div>
 
     <div class="payment-method-content">
