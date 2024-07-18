@@ -3,6 +3,7 @@ $gatewayResponse = $block->getResponseValues();
 if ($gatewayResponse) {
     $payment_method = $gatewayResponse['payment_method'];
     $hitpay_fee = $gatewayResponse['hitpay_fee'];
+    $hitpay_fee_currency = $gatewayResponse['hitpay_fee_currency'];
 ?>
     <table id="hitpay-payment-details" style="display: none">
         <tr id="hitpay_payment_method">
@@ -14,7 +15,7 @@ if ($gatewayResponse) {
         <tr id="hitpay_fees">
             <td class="label"><strong><?php echo $block->escapeHtml('HitPay Fee')?></strong></td>
             <td class="amount text-right nowrap">
-                <strong><?php echo $block->escapeHtml($hitpay_fee)?></strong>
+                <strong><?php echo $block->escapeHtml($hitpay_fee).' '.$block->escapeHtml($hitpay_fee_currency)?></strong>
             </td>
         </tr>
     </table>

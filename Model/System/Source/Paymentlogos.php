@@ -268,6 +268,18 @@ class Paymentlogos implements ArrayInterface
                 'value' => 'shopback_paylater',
                 'label' => __('ShopBack PayLater')
             ],
+            [
+                'value' => 'duitnow',
+                'label' => __('DuitNow')
+            ],
+            [
+                'value' => 'touchngo',
+                'label' => __('Touch \'n Go')
+            ],
+            [
+                'value' => 'boost',
+                'label' => __('Boost')
+            ],
         ];
     }
 }

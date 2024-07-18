@@ -83,6 +83,9 @@ define([
             grab_paylater: window.checkoutConfig.payment.hitpay.status.grab_paylater,
             favepay: window.checkoutConfig.payment.hitpay.status.favepay,
             shopback_paylater: window.checkoutConfig.payment.hitpay.status.shopback_paylater,
+            duitnow: window.checkoutConfig.payment.hitpay.status.duitnow,
+            touchngo: window.checkoutConfig.payment.hitpay.status.touchngo,
+            boost: window.checkoutConfig.payment.hitpay.status.boost,
         },
         getInstructions: function () {
             return window.checkoutConfig.payment.instructions[this.item.method];
