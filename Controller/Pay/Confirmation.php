@@ -42,39 +42,38 @@ class Confirmation extends \Magento\Framework\App\Action\Action
                        return $this->getResponse()->setRedirect($model->getCheckoutSuccessUrl(['order_id' => $orderId])); 
                     }
                     
-                    $model->log('Order Status:'.$order->getStatus());
                     if (isset($params['status']) && $params['status'] == 'canceled') {
-                        throw new \Exception(__('Transaction canceled by customer/gateway. '));
-                    }
-                    
-                    $savedPaymentId = $this->helper->getPaymentResponseSingle($order->getId(), 'payment_id');
-                    
-                    $reference = trim($params['reference']);
-                    if ($savedPaymentId != $reference) {
-                        throw new \Exception(__('Transaction references check failed. '));
+                        $error_message = __('Transaction canceled by customer/gateway. ');
+                        $model->log('Return:'.$error_message);
+                        $message = __('HitPay Payment is failed. '.$error_message);
+            
+                        if ($order && $order->getId() > 0) {
+                            $order->cancel();
+                            $order->addStatusHistoryComment($message, \Magento\Sales\Model\Order::STATE_CANCELED);
+                            $order->save();
+                            $session->restoreQuote();
+                        }
+                        $this->messageManager->addError($message);
+                        return $this->getResponse()->setRedirect($model->getCheckoutCartUrl()); 
                     }
                     
                     return $this->getResponse()->setRedirect($model->getCheckoutSuccessUrl(['order_id' => $orderId]));
 
                 } else {
-                    throw new \Exception(__('No relation found with this transaction in the store.'));
+                    $error_message = __('No relation found with this transaction in the store. ');
+                    $model->log('Return:'.$error_message);
+                    return $this->getResponse()->setRedirect($model->getCheckoutSuccessUrl()); 
                 }
             } else {
-                throw new \Exception(__('Empty response received from gateway.'));
+                $error_message = __('Empty response received from gateway. ');
+                $model->log('Return:'.$error_message);
+                return $this->getResponse()->setRedirect($model->getCheckoutSuccessUrl()); 
             }
         } catch (\Exception $e) {
             $error_message = $e->getMessage();
             $model->log('Return from Gateway Catch');
             $model->log('Exception:'.$e->getMessage());
-            $message = __('HitPay Payment is failed. '.$error_message);
-            if ($order && $order->getId() > 0) {
-                $order->cancel();
-                $order->addStatusHistoryComment($message, \Magento\Sales\Model\Order::STATE_CANCELED);
-                $order->save();
-                $session->restoreQuote();
-            }
-            $this->messageManager->addError($message);
-            echo '<script>window.top.location.href = "'.$model->getCheckoutCartUrl().'";</script>';
+            return $this->getResponse()->setRedirect($model->getCheckoutSuccessUrl()); 
         }
         exit;
     }

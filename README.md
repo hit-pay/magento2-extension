@@ -163,3 +163,7 @@ If you click the Credit Memo button in other pages, Magento will provide option 
 * Fixed Admin refund error for multi-store
 * Fixed Success page status display loader issue when reloading the page
 * Plugin tested on Magento 2.4.7-p1
+
+= 2.1.3 =
+* Aug 2, 2024
+* Updated Return URL page, removed the order canceling if any php error/warning/notice occurs and removed the comparison of the order references.
