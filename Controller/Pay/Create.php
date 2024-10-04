@@ -34,7 +34,9 @@ class Create extends \Magento\Framework\App\Action\Action
             $session = $this->_objectManager->get('Magento\Checkout\Model\Session');
             $order = $model->getOrder();
             if ($order && $order->getId() > 0) {
-                
+
+                $payment = $order->getPayment();
+
                 $client = new Client(
                     $model->getConfigValue("api_key"),
                     $model->getConfigValue("mode")
@@ -50,11 +52,23 @@ class Create extends \Magento\Framework\App\Action\Action
                     ->setWebhook($webhook)
                     ->setRedirectUrl($redirectUrl)
                     ->setChannel('api_magento');
-                
+           
                 $createPaymentRequest->setName($order->getCustomerFirstname() . ' ' . $order->getCustomerLastname());
                 $createPaymentRequest->setEmail($order->getCustomerEmail());
                 
                 $createPaymentRequest->setPurpose($model->getStoreName());
+
+                $enable_pos = $model->getConfigValueByCode('hitpay_pos','active');
+                if ($enable_pos) {
+                    $hitpay_payment_option = $payment->getAdditionalInformation('hitpay_payment_option');
+                    
+                    if (!empty($hitpay_payment_option) && $hitpay_payment_option != 'onlinepayment') {
+                        $hitpay_payment_option  = trim($hitpay_payment_option);
+                        $terminal_id = $hitpay_payment_option;
+                        $createPaymentRequest->setPaymentMethod('wifi_card_reader');
+                        $createPaymentRequest->setWifiTerminalId($terminal_id);
+                    }
+                }
                 
                 $model->log('Create Payment Request:');
                 $model->log((array)$createPaymentRequest);

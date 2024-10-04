@@ -6,4 +6,7 @@
     <event name="layout_generate_blocks_after">
         <observer name="hitpay_layout_generate_blocks_after" instance="SoftBuild\HitPay\Observer\AddLink" />
     </event>
+    <event name="payment_method_assign_data_hitpay">
+        <observer name="hitpay_data_assigner" instance="SoftBuild\HitPay\Observer\AddAdditionalData" />
+    </event>
 </config>

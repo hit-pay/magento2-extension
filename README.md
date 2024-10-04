@@ -167,3 +167,8 @@ If you click the Credit Memo button in other pages, Magento will provide option 
 = 2.1.3 =
 * Aug 2, 2024
 * Updated Return URL page, removed the order canceling if any php error/warning/notice occurs and removed the comparison of the order references.
+
+= 2.1.4 =
+* Oct 4, 2024
+* Tested on 2.4.7-p2
+* Upgraded to support HitPay POS Terminals.
