@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright ï¿½ Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace SoftBuild\HitPay\Model;
@@ -125,6 +125,18 @@ class Pay extends \Magento\Payment\Model\Method\AbstractMethod
     public function getConfigValue($key, $forceStoreId=false, $storeId=0)
     {
         $pathConfig = 'payment/' . $this->_code . "/" . $key;
+        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        
+        if (!$forceStoreId) {
+            $storeId = (int)$this->storeManager->getStore()->getStoreId();
+        }
+        
+        return $this->_scopeConfig->getValue($pathConfig, $storeScope, $storeId);
+    }
+
+    public function getConfigValueByCode($code, $key, $forceStoreId=false, $storeId=0)
+    {
+        $pathConfig = 'payment/' . $code . "/" . $key;
         $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
         
         if (!$forceStoreId) {

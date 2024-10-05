@@ -43,7 +43,7 @@
                     <frontend_model>SoftBuild\HitPay\Block\System\Paymentlogos</frontend_model>
                     <comment>Selected logos will be displayed on the checkout. Only 10 logos can be selected.</comment>
                 </field>
-		<field id="auto_invoice" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1"
+		        <field id="auto_invoice" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1"
                        showInStore="1">
                     <label>Enabled Auto Invoice</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -67,6 +67,18 @@
                 </field>
                 <field id="sort_order" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Sort Order</label>
+                </field>
+            </group>
+            <group id="hitpay_pos" translate="label comment" type="text" sortOrder="310" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>HitPay POS</label>
+                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="pos_terminals" translate="label" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>POS Terminals</label>
+                    <frontend_model>SoftBuild\HitPay\Block\Adminhtml\Form\Field\POSFields</frontend_model>
+                    <backend_model>SoftBuild\HitPay\Model\Config\Backend\POSFields</backend_model>
                 </field>
             </group>
         </section>

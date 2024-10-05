@@ -9,10 +9,12 @@ define([
     'Magento_Checkout/js/view/payment/default',
     'Magento_Checkout/js/action/place-order',
     'Magento_Checkout/js/model/payment/additional-validators',
+    'ko',
 ], function ($,
         Component,
         placeOrderAction,
         additionalValidators,
+        ko
         ) {
     'use strict';
 
@@ -86,14 +88,41 @@ define([
             duitnow: window.checkoutConfig.payment.hitpay.status.duitnow,
             touchngo: window.checkoutConfig.payment.hitpay.status.touchngo,
             boost: window.checkoutConfig.payment.hitpay.status.boost,
+            pos_enabled: window.checkoutConfig.payment.hitpay.pos_enabled,
+            terminal_ids: window.checkoutConfig.payment.hitpay.terminal_ids,
+            only_one_terminal_id: window.checkoutConfig.payment.hitpay.only_one_terminal_id,
+        },
+        getSingleTerminalId: function () {
+            if (this.pos_enabled && this.only_one_terminal_id) {
+                return this.terminal_ids[0];
+            }
+        },
+        getTerminals: function () {
+            if (this.pos_enabled) {
+                var terminalsDict = [];
+                this.terminal_ids.forEach(element => {
+                    terminalsDict.push({'terminal_id': element});
+                });
+                return ko.observableArray(terminalsDict)
+            }
         },
         getInstructions: function () {
             return window.checkoutConfig.payment.instructions[this.item.method];
+        },
+        getHitpayPaymentOption: function() {
+            var self = this;
+            var hitpay_payment_option = '';
+            if (self.pos_enabled) {
+                hitpay_payment_option = $('input[name="hitpay_payment_option"]:checked').val();
+            }
+            return hitpay_payment_option;
+            
         },
         getData: function () {
             return {
                 "method": 'hitpay',
                 "additional_data": {
+                    'hitpay_payment_option': this.getHitpayPaymentOption(),
                 }
             };
         },
