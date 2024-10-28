@@ -130,6 +130,14 @@ If you click the Credit Memo button in other pages, Magento will provide option 
 
 ![](images/2-drop-in-frontend.png)
 
+## POS Terminal Settings
+
+![](images/1-pos-settings.png)
+
+##  POS Terminal Checkout UI
+
+![](images/2-pos-frontend.png)
+
 ## Changelog
 
 = 1.0.0 =
